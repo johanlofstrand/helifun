@@ -1,0 +1,40 @@
+import device;
+import ui.View;
+import src.platformer.Physics as Physics;
+import ui.SpriteView;
+
+	// Load the player's sprite. Take a look at the resources directory
+	// to see what these images look like and how they fit together to
+	// form a SpriteView.
+	exports.setupPlayer = function () {
+		this.player = new ui.SpriteView({
+			zIndex: 1,
+			x: 0,
+			y: 0,
+			anchorX: 50,
+			anchorY: 50,
+			autoSize: true,
+			url: 'resources/images/avatarHelicopter/heli',
+			defaultAnimation: 'fly',
+			autoStart: true,
+		});
+		
+		// The player can double-jump, so the first jump == 1, second jump == 2
+		this.player.jumpingLevel = 1;
+		
+		// This player needs to be able to move with physics.
+		// This function will give the player a bunch of new
+		// functionality like velocity, acceleration, and
+		// a bunch of positioning helper functions.
+		// See the Physics class documentation!
+		Physics.addToView(this.player, {
+			hitbox: {
+				x: 0,
+				y: 20,
+				width: 80,
+				height: 80,
+			}
+		});
+		return this.player;
+	}
+	
