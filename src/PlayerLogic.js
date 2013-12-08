@@ -19,9 +19,6 @@ import ui.SpriteView;
 			autoStart: true,
 		});
 		
-		// The player can double-jump, so the first jump == 1, second jump == 2
-		this.player.jumpingLevel = 1;
-		
 		// This player needs to be able to move with physics.
 		// This function will give the player a bunch of new
 		// functionality like velocity, acceleration, and
