@@ -31,8 +31,8 @@ var emptyFunc = function () {};
 exports = Class(View, function (supr) {
 	
 	var defaults = {
-		charWidth: 50,
-		charHeight: 70,
+		charWidth: 30,
+		charHeight: 40,
 		chars: {
 			'+': 'plus',
 			'-' : 'minus',

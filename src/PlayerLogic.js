@@ -10,10 +10,13 @@ import ui.SpriteView;
 		this.player = new ui.SpriteView({
 			zIndex: 1,
 			x: 0,
-			y: 0,
-			anchorX: 50,
-			anchorY: 50,
-			autoSize: true,
+			y: 350,
+			anchorX: 70,
+			anchorY: 35,
+			offestX: 70,
+			offsetY: 35,
+			width: 135,
+			height: 70,
 			url: 'resources/images/avatarHelicopter/heli',
 			defaultAnimation: 'fly',
 			autoStart: true,
@@ -28,8 +31,8 @@ import ui.SpriteView;
 			hitbox: {
 				x: 0,
 				y: 20,
-				width: 80,
-				height: 80,
+				width: 130,
+				height: 60,
 			}
 		});
 		return this.player;

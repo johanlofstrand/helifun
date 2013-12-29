@@ -5,16 +5,16 @@ import src.platformer.util as util;
 exports.addFarBrush = function(parallaxView) {
 
 	parallaxView.addLayer({
-		distance: 20,
+		distance: 15,
 		populate: function (layer, x) {
 			var v = layer.obtainView(ui.ImageView, {
 				superview: layer,
-				image: "resources/images/level/fargroundBrush.png",
+				//image: "resources/images/level/jbush_base1.png",
+				image: "resources/images/level/jmountain1.png",
 				x: x,
-				y: layer.style.height - 250,
-				opacity: 0.5,
-				width: 1024,
-				height: 212
+				y: 470,
+				width: 1000,
+				height: 125
 			});
 			return v.style.width;
 		}
@@ -28,11 +28,12 @@ exports.addCloseBrush =function (parallaxView) {
 		populate: function (layer, x) {
 			var v = layer.obtainView(ui.ImageView, {
 				superview: layer,
+				//image: "resources/images/level/jbush_base2.png",
 				image: "resources/images/level/midgroundBrush.png",
 				x: x,
-				y: layer.style.height - 200,
-				width: 1024,
-				height: 212
+				y: 550,
+				width: 1000,
+				height: 100
 			});
 			return v.style.width;
 		}
@@ -47,15 +48,16 @@ exports.addWater =function(parallaxView) {
 				superview: layer,
 				image: "resources/images/level/waterFast.png",
 				x: x,
-				y: layer.style.height - 200,
-				width: 1024,
-				height: 50
+				//backgroundColor: "#0000FF",
+				y: 630,
+				width: 1200,
+				opacity: 0.8,
+				height: 100
 			});
 			return v.style.width;
 		}
 	});
 }
-
 
 exports.addCloud = function(parallaxView) {
 	parallaxView.addLayer({
@@ -64,9 +66,9 @@ exports.addCloud = function(parallaxView) {
 			var size = util.choice([1,2,3,4,5]);
 			var v = layer.obtainView(ui.ImageView, {
 				superview: layer,
-				image: "resources/images/level/cloud" + size + ".png",
+				image: "resources/images/level/jcloud" + size + ".png",
 				x: x,
-				y: layer.style.height - util.randInt(400, 800),
+				y: util.randInt(0, 200),
 				opacity: Math.random(),
 				autoSize: true
 			});
