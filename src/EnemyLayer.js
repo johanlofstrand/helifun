@@ -18,7 +18,6 @@ exports.populateEnemyLayer = function(layer, x) {
 				width: 124,
 				height: 60,
 			}, {poolSize: 3, group: "planes"});
-		console.log("optainView");
 		return util.randInt(2000,10000);
 	}
 
@@ -32,7 +31,6 @@ exports.populateEnemyLayer = function(layer, x) {
 				width: 100,
 				height: 50,
 			};
-			console.log("init");
 			supr(this, 'init', arguments);
 
 			Physics.prototype.init.apply(this, arguments);
@@ -50,17 +48,12 @@ exports.populateEnemyLayer = function(layer, x) {
 	
 
 		 this.onObtain = function() {
-       		console.log("x: " + this.style.x + " y: " + this.style.y + "offsetX: " + this.style.offsetX + "offsetY: " + this.style.offsetY);
-        	console.log('onObtain');
-        	//this.updateOpts(y=50);
-        	//this.setTopLeft(100);
-        	//this.setTopRight(100);
+       		//console.log("x: " + this.style.x + " y: " + this.style.y + "offsetX: " + this.style.offsetX + "offsetY: " + this.style.offsetY);
      		this.sprite.style.visible=true;
      	},
 
     	this.onRelease = function() {
         	//console.log("x: " + this.style.x + " y: " + this.style.y + "offsetX: " + this.style.offsetX + "offsetY: " + this.style.offsetY);
-        	console.log('view released!');
     	},
 	
 		this.tick = function () {

@@ -18,6 +18,7 @@ import src.platformer.Physics as Physics;
 import src.platformer.ScoreView as ScoreView;
 import src.platformer.util as util;
 import src.ApplicationExtras as extras;
+import src.InfoViews as InfoViews;
 import src.PlayerLogic as playerlogic;
 import src.GameLayer as gamelayer;
 import src.StarLayer as starlayer;
@@ -26,6 +27,8 @@ import src.EnemyLayer as enemylayer;
 import src.BalloonLayer as balloonlayer;
 import src.GoldLayer as goldlayer;
 import src.ZepLayer as zeplayer;
+import src.BalloonBoard as BalloonBoard;
+import event.Emitter as Emitter;
 
 import device;
 
@@ -46,6 +49,8 @@ exports = Class(GC.Application, function () {
 	const SCORE_STAR = 100;
 	const SCORE_TIME = 1;
 
+	this.balloonMessenger = new Emitter();
+
 	this.initUI = function () {
 		util.scaleRootView(this, 1024, 680);
 		loader.preload(["resources/images/level", "resources/audio/effects"], function () {
@@ -55,8 +60,10 @@ exports = Class(GC.Application, function () {
 		this.setupInput();
 		this.player = playerlogic.setupPlayer();		
 		this.sound = extras.loadSound();
-		this.scoreView = extras.setupScoreView(this);
-		this.sliderView = extras.setupSliderView(this);
+		this.scoreView = InfoViews.setupScoreView(this);
+		this.BalloonBoard = new BalloonBoard(this);
+		this.addSubview(this.BalloonBoard);
+		this.energyView = InfoViews.setupEnergyView(this);
 		this.startGame();
 		
 		Physics.start();
@@ -101,7 +108,6 @@ exports = Class(GC.Application, function () {
 
 		});
 
-
 		this.enemyLayer = this.parallaxView.addLayer({
 			distance: 7,
 			populate: function (layer, x) {
@@ -118,7 +124,6 @@ exports = Class(GC.Application, function () {
 
 		});
 
-
 		this.goldLayer = this.parallaxView.addLayer({
 			distance: 7,
 			populate: function (layer, x) {
@@ -134,7 +139,14 @@ exports = Class(GC.Application, function () {
 			}.bind(this)
 
 		});
-		//this.gameLayer.addSubview(this.enemylayer);
+		this.textView = new ui.TextView({
+			      superview: this.parallaxView,
+			      layout: 'box',
+			      fontFamily: 'BPreplayBold',
+			      text: "Game over!",
+			      size: 45,
+			      wrap: true
+		});
 	
 	}
 
@@ -209,8 +221,10 @@ exports = Class(GC.Application, function () {
 		this.score = 0;
 		this.sliderValue=this.view.style.width/3;
 		this.sliderValueStart = this.sliderValue;
-		//this.sliderView.setThumbSize(this.sliderValue);
+		//this.energyView.setThumbSize(this.sliderValue);
 		this.no_of_gold_ballons=0;
+	//	this.BalloonBoard.removeAllSubviews();
+
 	}
 	
 	// This code actually starts the game.
@@ -222,8 +236,10 @@ exports = Class(GC.Application, function () {
 		}.bind(this), 10);
 		
 		this.resetState();
+		this.BalloonBoard.removeAllSubviews();
 		this.parallaxView.scrollTo(0, 0);
 		this.parallaxView.clear();
+		this.textView.hide();
 	
 		this.player.setCollisionEnabled(true);
 		this.player.style.r = 0; // he rotates when he dies
@@ -250,30 +266,12 @@ exports = Class(GC.Application, function () {
 				.then({scale: 2}, 400, animate.easeIn)
 				.then({scale: 1}, 400, animate.easeOut)
 				.then({y: 0},400)
-			//Rerun symbol...
-			//console.log("show rerun view: parallaxView.x: "+ this.parallaxView.style.x + " parallaxView.y: " + this.parallaxView.style.y);
-			/*this.rerunView = new ImageView({
-			    superview: this.parallaxView,
-			  	zIndex: 10000,
-				x: this.parallaxView.style.width / 2,  //margin to get right of scoreView
-				y: this.parallaxView.style.height / 5,
-				width: 150,
-				height: 150,
-			    image: "resources/images/jrerun.png"
-			});
-			this.parallaxView.addSubview(this.rerunView);*/
-			/*this.tV = new ui.TextView({
-			      superview: this.parallaxView,
-			      layout: 'box',
-			      fontFamily: 'BPreplayBold',
-			      text: "Game over!",
-			      size: 45,
-			      wrap: true
-			    });*/
+			this.textView.show();
 		}
 	}
 
 	this.tick = function (dtMS) {
+		
 		if (!this.loaded) {
 			return;
 		}
@@ -303,7 +301,7 @@ exports = Class(GC.Application, function () {
 			this.player.setRotation(0);
 			this.player.resetAnimation();
 			this.sliderValue = this.sliderValue-0.5;
-        	this.sliderView.setThumbSize(this.sliderValue);
+        	this.energyView.setThumbSize(this.sliderValue);
 		}	
 
 		var hits = this.player.getCollisions("star");
@@ -329,7 +327,7 @@ exports = Class(GC.Application, function () {
 			var hit = hits_p[i];
 			var plane = hit.view;
 			this.sliderValue = this.sliderValue-5;
-        	this.sliderView.setThumbSize(this.sliderValue);
+        	this.energyView.setThumbSize(this.sliderValue);
 			animate(this.player)
 				.now({
 					dr: Math.PI * -2
@@ -344,7 +342,7 @@ exports = Class(GC.Application, function () {
 		var hits_b = this.player.getCollisions("balloons");
 		for (var i = 0; i < hits_b.length; i++) {
 			this.sliderValue = this.sliderValue-2;
-        	this.sliderView.setThumbSize(this.sliderValue);
+        	this.energyView.setThumbSize(this.sliderValue);
 			animate(this.player)
 				.now({
 					r: Math.PI * 2
@@ -356,7 +354,7 @@ exports = Class(GC.Application, function () {
 		var hits_z = this.player.getCollisions("zeps");
 		for (var i = 0; i < hits_z.length; i++) {
 			this.sliderValue = this.sliderValue-1;
-        	this.sliderView.setThumbSize(this.sliderValue);
+        	this.energyView.setThumbSize(this.sliderValue);
 			animate(this.player)
 				.now({r: 0.2}, 60)
 				.then({r:-0.2},60)
@@ -365,16 +363,30 @@ exports = Class(GC.Application, function () {
 
 		// If they hit a gold balloon
 		var hits_g = this.player.getCollisions("goldballoons");
-		for (var i = 0; i < hits_g.length; i++) {
+		for (i=0; i< hits_g.length; i++) {
+			
+			var hit = hits_g[i];
+			var goldb = hit.view;
+			goldb.setCollisionEnabled(false);
+			goldb.removeFromSuperview();
 			if (this.sliderValue < this.sliderValueStart - 5) {
 				this.sliderValue = this.sliderValue+5;
 			};
-        	this.sliderView.setThumbSize(this.sliderValue);
+        	this.energyView.setThumbSize(this.sliderValue);
         	this.no_of_gold_ballons++;
-        	if (this.no_of_gold_ballons>=3) {
-        		console.log("win!")
+        	this.balloonMessenger.emit('NewBalloon',this);
+
+        	if (this.no_of_gold_ballons>=5) {
+        		this.textView.setText("Grattis! Du tog 5 ballonger!");
+        		this.finishGame();
+        		/*this.flagView = new ImageView({  //Måste ju hamna på ett berg...sänd medd till gamelayer?
+        			view: this.parallaxView,
+        			x: 0,
+        			y: 0
+        		});*/
         		//sänd meddelande att landingsbana ska komma? //slutskärm??
         	}
+
 		}
 
 			

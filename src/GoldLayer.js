@@ -8,16 +8,16 @@ import device;
 
 exports.populateGoldLayer = function(layer, x) {
 
+	var spriteid=1;
 
 	var goldballoon = layer.obtainView(GoldView, {
-				
 				superview: layer,
 				x: x+util.randInt(500,1000),
-				y: util.randInt(0,600),
+				y: util.randInt(100,500),
 				width: 52,
 				height: 97,
-			}, {poolSize: 3, group: "goldballoons"});
-		return util.randInt(500,3000);
+			}, {poolSize: 8, group: "goldballoons"});
+		return util.randInt(700,2400);
 	}
 
 	var GoldView = new Class([ui.View, Physics], function (supr) {
@@ -32,7 +32,7 @@ exports.populateGoldLayer = function(layer, x) {
 			};
 			console.log("init");
 			supr(this, 'init', arguments);
-
+			
 			Physics.prototype.init.apply(this, arguments);
 
 			var sprite = this.sprite = new ui.SpriteView({
@@ -56,10 +56,20 @@ exports.populateGoldLayer = function(layer, x) {
 
 		},
 	
+		this.onObtain = function() {
+			this.setCollisionEnabled(true);
+			//console.log("GOLD obtain");
+		}
 	
 		this.tick = function () {
 			this.hitbox.y = this.sprite.style.y; //must update hitbox due to animation changes position all the time...
 			this.hitbox.x = this.sprite.style.x;
+			
+			if (this.sprite.style.y < -500) { //need to recycle them when they are gone out of screen...
+				//console.log("restart: " + this);
+				this.sprite.style.y = util.randInt(100,500);
+				//this.sprite.removeFromSuperview();	
+			}
 			this.sprite.style.y--;
 		},
 		

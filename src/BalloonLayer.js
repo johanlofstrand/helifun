@@ -18,8 +18,7 @@ exports.populateBalloonLayer = function(layer, x) {
 				width: 120,
 				height: 195,
 			}, {poolSize: 3, group: "balloons"});
-		console.log("optainView");
-		return util.randInt(800,2800);
+		return util.randInt(1200,2000);
 	}
 
 	var BalloonView = new Class([ui.View, Physics], function (supr) {
@@ -32,7 +31,6 @@ exports.populateBalloonLayer = function(layer, x) {
 				width: 120,
 				height: 195,
 			};
-			console.log("init");
 			supr(this, 'init', arguments);
 
 			Physics.prototype.init.apply(this, arguments);
