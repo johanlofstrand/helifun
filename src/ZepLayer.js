@@ -18,7 +18,6 @@ exports.populateZepLayer = function(layer, x) {
 				width: 200,
 				height: 60,
 			}, {poolSize: 3, group: "zeps"});
-		console.log("optainView");
 		return util.randInt(1500,3500);
 	}
 

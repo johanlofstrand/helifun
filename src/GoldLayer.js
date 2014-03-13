@@ -30,7 +30,7 @@ exports.populateGoldLayer = function(layer, x) {
 				width: 52,
 				height: 97,
 			};
-			console.log("init");
+	
 			supr(this, 'init', arguments);
 			
 			Physics.prototype.init.apply(this, arguments);

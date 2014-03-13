@@ -4,6 +4,7 @@ import device;
 
 exports = Class(ui.View, function (supr) {
 	
+	var xStart;
 	var xOld;
 	var xSpace;
 	
@@ -18,18 +19,21 @@ exports = Class(ui.View, function (supr) {
 
 		supr(this, 'init', [opts]);
 
-		this.xOld = device.width - device.width/2 + device.width/10;
+
+		this.xStart = device.width - device.width/2 + device.width/10;
+		this.xOld = this.xStart;
 		this.xSpace = 60;
 	
 		opts.balloonMessenger.on('NewBalloon', bind(this,function(){
-			console.log('NewBalloon');
+			if (this.xOld >= this.xStart + 60*5 ) { //When restart... must do this better...
+				this.xOld = this.xStart - this.xSpace;  
+			}
 			this.balloonHandler();
 		}));
 
 	};
 	this.balloonHandler = function() {
 			this.xNew = this.xOld + this.xSpace;
-			console.log("X: " + this.xNew);
 			this.balloonScoreView = new ImageScaleView({
 				zIndex: 10001,	
 				autoSize: true,

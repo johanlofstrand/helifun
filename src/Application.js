@@ -236,11 +236,12 @@ exports = Class(GC.Application, function () {
 		}.bind(this), 10);
 		
 		this.resetState();
-		this.BalloonBoard.removeAllSubviews();
 		this.parallaxView.scrollTo(0, 0);
 		this.parallaxView.clear();
+		this.BalloonBoard.removeAllSubviews();
+		
 		this.textView.hide();
-	
+
 		this.player.setCollisionEnabled(true);
 		this.player.style.r = 0; // he rotates when he dies
 		this.player
@@ -266,6 +267,7 @@ exports = Class(GC.Application, function () {
 				.then({scale: 2}, 400, animate.easeIn)
 				.then({scale: 1}, 400, animate.easeOut)
 				.then({y: 0},400)
+			
 			this.textView.show();
 		}
 	}
@@ -296,7 +298,7 @@ exports = Class(GC.Application, function () {
 		var hits_g = this.player.getCollisions("ground");
 		for (var i = 0; i < hits_g.length; i++) {
 			var hit = hits_g[i];
-			console.log("Ground");
+		
 			animate(this.player).clear();											
 			this.player.setRotation(0);
 			this.player.resetAnimation();
@@ -397,6 +399,7 @@ exports = Class(GC.Application, function () {
 		}
 
 		if (this.sliderValue<=0) {
+			this.textView.setText("Game over!");
 			this.finishGame();
 		}
 	}
