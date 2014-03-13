@@ -1,2 +1,4 @@
 /resources
 /build
+.DS_Store
+.version
