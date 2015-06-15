@@ -8,11 +8,11 @@ exports.setupEnergyView = function(view) {
 		superview: view,
 		x: 0,
 		y: 0,
-		width: view.style.width/3,
+		width: view.style.width/4,
 		height: 25,
-		  offsetX: view.style.width/10,
+		offsetX: view.style.width/10,
 		offsetY: 10,
-		thumbSize: view.style.width/3,
+		thumbSize: view.style.width/4,
 		active: true,
 		track: {
 			activeColor: '#FFFFFF' 
@@ -22,6 +22,7 @@ exports.setupEnergyView = function(view) {
 			inactiveColor: '#FFFF00',
 		}
      });
+	this.energyView.startValue =  view.style.width/4;
 	return this.energyView;
 }
 
@@ -39,7 +40,7 @@ exports.setupScoreView = function (view) {
 		charWidth: 25,
 		charHeight: 35,
 		text: "0",
-		url: 'resources/images/numbers/char-{}.png',
+		url: 'resources/images/numbers/{}.png',
 	});
 	return this.scoreView;
 }

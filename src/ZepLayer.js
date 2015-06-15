@@ -31,7 +31,6 @@ exports.populateZepLayer = function(layer, x) {
 				width: 200,
 				height: 60,
 			};
-			console.log("init");
 			supr(this, 'init', arguments);
 
 			Physics.prototype.init.apply(this, arguments);
@@ -59,8 +58,7 @@ exports.populateZepLayer = function(layer, x) {
 			animateZep();
 
 		},
-	
-	
+
 		this.tick = function () {
 			this.hitbox.y = this.sprite.style.y; //must update hitbox due to animation changes position all the time...
 			this.hitbox.x = this.sprite.style.x;

@@ -21,32 +21,23 @@ import src.ApplicationExtras as extras;
 import src.InfoViews as InfoViews;
 import src.PlayerLogic as playerlogic;
 import src.GameLayer as gamelayer;
-import src.StarLayer as starlayer;
+import src.DiamondLayer as diamondlayer;
 import src.DepthLayers as DepthLayers;
 import src.EnemyLayer as enemylayer;
 import src.BalloonLayer as balloonlayer;
 import src.GoldLayer as goldlayer;
 import src.ZepLayer as zeplayer;
-import src.BalloonBoard as BalloonBoard;
 import event.Emitter as Emitter;
 
 import device;
 
 
-import plugins.ouya.ouya as ouya;
-
-
 exports = Class(GC.Application, function () {
 	
-	// Game constants, for easy tweaking:
 	const GRAVITY = 0;
-	const HOLD_GRAVITY = GRAVITY / 3;
-	const JUMP_VELOCITY = 200;
-	const ROLL_VELOCITY = 700;
 	const PLAYER_INITIAL_SPEED = 150;
-	const WORLD_ACCELERATION = 10;
-	const REBOUND_PERCENTAGE = 0.3;
-	const SCORE_STAR = 100;
+	const WORLD_ACCELERATION = 7;
+	const SCORE_STAR = 500;
 	const SCORE_TIME = 1;
 
 	this.balloonMessenger = new Emitter();
@@ -54,23 +45,20 @@ exports = Class(GC.Application, function () {
 	this.initUI = function () {
 		util.scaleRootView(this, 1024, 680);
 		loader.preload(["resources/images/level", "resources/audio/effects"], function () {
-
+		this.energyView = InfoViews.setupEnergyView(this);
 		this.resetState();
 		this.setupParallaxView();
 		this.setupInput();
 		this.player = playerlogic.setupPlayer();		
 		this.sound = extras.loadSound();
 		this.scoreView = InfoViews.setupScoreView(this);
-		this.BalloonBoard = new BalloonBoard(this);
-		this.addSubview(this.BalloonBoard);
-		this.energyView = InfoViews.setupEnergyView(this);
 		this.startGame();
 		
 		Physics.start();
 
 		// this flag allows the tick function below to begin stepping.
 		this.loaded = true;
-		
+
 		}.bind(this));
 	}
 
@@ -79,16 +67,16 @@ exports = Class(GC.Application, function () {
 		this.parallaxView = new ParallaxView({
 			superview: this.view,
 		 	width: this.view.style.width,
-		 	height: this.view.style.height,
+		 	height: this.view.style.height
 		});
 		
-		this.parallaxView.addBackgroundView(new ui.ImageScaleView({
+	/*	this.parallaxView.addBackgroundView(new ui.ImageScaleView({
 			scaleMethod: 'cover',
 			image: "resources/images/level/backgroundSky.png",
 		}));
+	*/
+		this.parallaxView.style.backgroundColor = "#87CEFA";
 	
-		DepthLayers.addFarBrush(this.parallaxView);
-		DepthLayers.addCloseBrush(this.parallaxView);
 		DepthLayers.addWater(this.parallaxView);
 		DepthLayers.addCloud(this.parallaxView);
 
@@ -100,10 +88,10 @@ exports = Class(GC.Application, function () {
 
 		});
 
-		this.starLayer = this.parallaxView.addLayer({
+		this.diamondLayer = this.parallaxView.addLayer({
 			distance: 7,
 			populate: function (layer, x) {
-				return starlayer.populateStarLayer(layer, x);
+				return diamondlayer.populateDiamondLayer(layer, x);
 			}.bind(this)
 
 		});
@@ -147,7 +135,6 @@ exports = Class(GC.Application, function () {
 			      size: 45,
 			      wrap: true
 		});
-	
 	}
 
 /* -------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -175,9 +162,6 @@ exports = Class(GC.Application, function () {
 		//this.player.setVelocity(this.player.getVelocity(),100);
 	}
 
-
-// We'll handle a couple gestures: swipe down, and tap-and-hold,
-	// using a GestureView.
 	this.setupInput = function () {
 		this.gestureView = new GestureView({
 			superview: this.view,
@@ -186,20 +170,8 @@ exports = Class(GC.Application, function () {
 			zIndex: 10000
 		});
 
-	ouya.onDigitalInput = function(evt) {
-			if (evt.code == ouya.BUTTON.O && this.lastAction != evt.action) {
-				this.lastAction = evt.action;
-				if (evt.action == ouya.ACTION.DOWN) {
-					this.onFly();
-				} else { // key up
-					this.onFlyDone();
-				}
-			}
-	}.bind(this);
 	
-		// When the player taps, try to jump
 		this.gestureView.on("InputStart", this.onFly.bind(this));
-
 		this.gestureView.on("InputSelect", this.onFlyDone.bind(this));
 	}
 
@@ -209,8 +181,6 @@ exports = Class(GC.Application, function () {
 
 /*--------------------------------------------------------------------------------------------------------------------------------------------*/
 	
-	
-	// Clear out a few variables before we start any game:
 	this.resetState = function () {
 		if (this.isFinished) {
 			animate(this.scoreView).commit();
@@ -219,15 +189,13 @@ exports = Class(GC.Application, function () {
 		this.t = 0;
 		this.isFinished = false;
 		this.score = 0;
-		this.sliderValue=this.view.style.width/3;
-		this.sliderValueStart = this.sliderValue;
-		//this.energyView.setThumbSize(this.sliderValue);
+		this.sliderValue=this.energyView.startValue;
+		this.energyView.setThumbSize(this.sliderValue);
 		this.no_of_gold_ballons=0;
 	//	this.BalloonBoard.removeAllSubviews();
 
-	}
-	
-	// This code actually starts the game.
+	};
+
 	this.startGame = function() {
 		setTimeout(function () {
 			// This is in a setTimeout because some desktop browsers need
@@ -238,26 +206,25 @@ exports = Class(GC.Application, function () {
 		this.resetState();
 		this.parallaxView.scrollTo(0, 0);
 		this.parallaxView.clear();
-		this.BalloonBoard.removeAllSubviews();
-		
+
 		this.textView.hide();
 
 		this.player.setCollisionEnabled(true);
-		this.player.style.r = 0; // he rotates when he dies
+		this.player.style.r = 0;
 		this.player
 			.setPosition(300, 300)
 			.setVelocity(PLAYER_INITIAL_SPEED, 0)
 			.setAcceleration(WORLD_ACCELERATION, GRAVITY);
 				this.gameLayer.addSubview(this.player);
 	};
-	
+
 	this.finishGame = function() {
 		if (!this.isFinished) {
 			this.isFinished = true;
 			//this.sound.play("lose");
-			this.player.acceleration.x = -400; // slow them down until they stop
+			this.player.acceleration.x = -400; //slow down
 			animate(this.parallaxView)
-				.now({opacity: 0.2}, 1000)
+				.now({opacity: 0.7}, 1000)
 				.wait(10000000)
 				.then({opacity: 1});
 			animate(this.scoreView)
@@ -277,7 +244,7 @@ exports = Class(GC.Application, function () {
 		if (!this.loaded) {
 			return;
 		}
-		var dt = Math.min(dtMS / 1000, 1/30); //return lowest value of these§	
+		var dt = Math.min(dtMS / 1000, 1/30); //return lowest value of these
 		this.t += dt;
 		
 		if (this.isFinished) {
@@ -295,32 +262,26 @@ exports = Class(GC.Application, function () {
 			this.scoreView.setText(this.score | 0);
 		}
 
-		var hits_g = this.player.getCollisions("ground");
-		for (var i = 0; i < hits_g.length; i++) {
-			var hit = hits_g[i];
-		
-			animate(this.player).clear();											
+		var hits_ground = this.player.getCollisions("ground");
+		for (var i = 0; i < hits_ground.length; i++) {
+			this.sound.play("alarm",{loop: false}); //play once
+			console.log("hit ground");
+			//animate(this.player).clear();
 			this.player.setRotation(0);
-			this.player.resetAnimation();
+			//this.player.resetAnimation();
+			animate(this.player).now({dr: -1},50).then({dr: 1},50)
 			this.sliderValue = this.sliderValue-0.5;
         	this.energyView.setThumbSize(this.sliderValue);
 		}	
 
-		var hits = this.player.getCollisions("star");
+		var hits = this.player.getCollisions("diamondballoons");
 		for (var i = 0; i < hits.length; i++) {
 			this.score += SCORE_STAR;
 			var hit = hits[i];
-			var star = hit.view;
-			star.setCollisionEnabled(false);
-			animate(star).now({
-				scale: 0,
-				dx: util.randInt(-100, 100),
-				dy: util.randInt(-100, 100),
-			}, 200).then(function () {star.removeFromSuperview()});
-		}
-		
-		if (hits.length) {
-			this.sound.play("star" + util.randInt(1,9));
+			var diaballoon = hit.view;
+			diaballoon.setCollisionEnabled(false);
+			diaballoon.removeFromSuperview();
+			this.sound.play("star");
 		}
 
 		// If they hit an ememy plane
@@ -328,6 +289,7 @@ exports = Class(GC.Application, function () {
 		for (var i = 0; i < hits_p.length; i++) {
 			var hit = hits_p[i];
 			var plane = hit.view;
+			this.sound.play("alarm",{loop: false}); //play once
 			this.sliderValue = this.sliderValue-5;
         	this.energyView.setThumbSize(this.sliderValue);
 			animate(this.player)
@@ -343,7 +305,8 @@ exports = Class(GC.Application, function () {
 		// If they hit an balloon
 		var hits_b = this.player.getCollisions("balloons");
 		for (var i = 0; i < hits_b.length; i++) {
-			this.sliderValue = this.sliderValue-2;
+			this.sound.play("alarm")	; //play once
+			this.sliderValue = this.sliderValue-3;
         	this.energyView.setThumbSize(this.sliderValue);
 			animate(this.player)
 				.now({
@@ -355,7 +318,8 @@ exports = Class(GC.Application, function () {
 		// If they hit a zep
 		var hits_z = this.player.getCollisions("zeps");
 		for (var i = 0; i < hits_z.length; i++) {
-			this.sliderValue = this.sliderValue-1;
+			this.sliderValue = this.sliderValue-2;
+			this.sound.play("alarm",{loop: false}); //play once
         	this.energyView.setThumbSize(this.sliderValue);
 			animate(this.player)
 				.now({r: 0.2}, 60)
@@ -364,34 +328,27 @@ exports = Class(GC.Application, function () {
 		}
 
 		// If they hit a gold balloon
-		var hits_g = this.player.getCollisions("goldballoons");
+		var hits_g = this.player.getCollisions("medballoons");
 		for (i=0; i< hits_g.length; i++) {
 			
 			var hit = hits_g[i];
 			var goldb = hit.view;
 			goldb.setCollisionEnabled(false);
 			goldb.removeFromSuperview();
-			if (this.sliderValue < this.sliderValueStart - 5) {
-				this.sliderValue = this.sliderValue+5;
+			if (this.sliderValue < this.energyView.startValue - 10) {
+				this.sliderValue = this.sliderValue+30;
 			};
         	this.energyView.setThumbSize(this.sliderValue);
         	this.no_of_gold_ballons++;
+			this.sound.play("medbox");
         	this.balloonMessenger.emit('NewBalloon',this);
 
-        	if (this.no_of_gold_ballons>=5) {
+        	/*if (this.no_of_gold_ballons>=5) {
         		this.textView.setText("Grattis! Du tog 5 ballonger!");
         		this.finishGame();
-        		/*this.flagView = new ImageView({  //Måste ju hamna på ett berg...sänd medd till gamelayer?
-        			view: this.parallaxView,
-        			x: 0,
-        			y: 0
-        		});*/
-        		//sänd meddelande att landingsbana ska komma? //slutskärm??
-        	}
+        	}*/
 
 		}
-
-			
 
 		// If the player fell off the bottom of the screen, game over!
 		if (this.player.getY() >= this.gameLayer.style.height) {

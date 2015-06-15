@@ -6,62 +6,60 @@ import animate;
 import ui.SpriteView;
 import device;
 
-exports.populateGoldLayer = function(layer, x) {
+exports.populateDiamondLayer = function(layer, x) {
 
-	var spriteid=1;
+	var spriteid= 1,
+		WIND_SPEED = 0.1;
 
-	var goldballoon = layer.obtainView(GoldView, {
+	var diamondballoon = layer.obtainView(DiamondView, {
 				superview: layer,
 				x: x+util.randInt(500,1000),
 				y: util.randInt(100,500),
-				width: 52,
-				height: 97,
-			}, {poolSize: 8, group: "medballoons"});
+				width: 80,
+				height: 180
+			}, {poolSize: 8, group: "diamondballoons"});
 		return util.randInt(700,2400);
 	}
 
-	var GoldView = new Class([ui.View, Physics], function (supr) {
+	var DiamondView = new Class([ui.View, Physics], function (supr) {
 		
 		this.init = function(opts) {
-			opts.group = "medballoons";
-			opts.hitbox = {  //rather player friendly hitbox
+			opts.group = "diamondballoons";
+			opts.hitbox = {
 				x: 0,
 				y: 0,
-				width: 52,
-				height: 97,
+				width: 100,
+				height: 200
 			};
 	
 			supr(this, 'init', arguments);
 			
 			Physics.prototype.init.apply(this, arguments);
 
+			this.getSpriteName = function() {
+				if (Math.random() <= 0.5) {
+					return "greendiab";
+				}
+				else {
+					return "reddiab";
+				}
+			}
+
 			var sprite = this.sprite = new ui.SpriteView({
 				superview: this,
-				width: 52,
-				height: 97,
-				url: "resources/images/medballoon/medballoon",
+				width: 80,
+				height: 180,
+				url: "resources/images/diamonds/" + this.getSpriteName(),
 				defaultAnimation: "spin",
-				frameRate: 4,
-				autoStart: true,
+				frameRate: 3,
+				autoStart: true
 			});
 
-			function animateGoldBallon() {
-			animate(sprite)
-				.clear()
-				.now({dx: 10}, 700)
-				.then({dx: -10}, 700)
-				.then(animateGoldBallon);
-			}
-			animateGoldBallon();
-
 		},
-	
-		this.onObtain = function() {
-			this.setCollisionEnabled(true);
-			//console.log("GOLD obtain");
-		}
-	
+
 		this.tick = function () {
+			this.sprite.style.y--;
+			//this.sprite.style.x = this.sprite.style.x + this.WIND_SPEED;
 			this.hitbox.y = this.sprite.style.y; //must update hitbox due to animation changes position all the time...
 			this.hitbox.x = this.sprite.style.x;
 			
@@ -70,14 +68,7 @@ exports.populateGoldLayer = function(layer, x) {
 				this.sprite.style.y = util.randInt(100,500);
 				//this.sprite.removeFromSuperview();	
 			}
-			this.sprite.style.y--;
-		},
-		
-		this.die = function() {
-			animate(this.sprite, "rotation")
-				.now({r: Math.PI * 1.5}, 500)
-				.then({dy: 400},500)
-				.clear();
+			//this.WIND_SPEED+=0.01;
 		}
 	});
 		
