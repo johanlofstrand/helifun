@@ -2,16 +2,21 @@ import ui.ImageScaleView as ImageScaleView;
 import ui.widget.SliderView as SliderView;
 import src.platformer.ScoreView as ScoreView;
 
-exports.setupEnergyView = function(view) {
 
+exports.setupEnergyView = function(view) {
+console.log("setupEnergyView");
+	console.log("width: view.style.width/4: " + view.style.width/4);
+	this.boundsWidth = 1000;
 	this.energyView = new SliderView({
+
 		superview: view,
 		x: 0,
-		y: 0,
+		y: 10,
 		width: view.style.width/4,
 		height: 25,
-		offsetX: view.style.width/10,
-		offsetY: 10,
+		zIndex: 10000,
+	//	offsetX: view.style.width/10,
+	//	offsetY: 10,
 		thumbSize: view.style.width/4,
 		active: true,
 		track: {
@@ -19,10 +24,22 @@ exports.setupEnergyView = function(view) {
 		},
 		thumb: {
 			activeColor: '#FFFF00', //bg color...
-			inactiveColor: '#FFFF00',
+			inactiveColor: '#FFFF00'
 		}
      });
+	console.log("ENERGY: " + view.style.width/4);
 	this.energyView.startValue =  view.style.width/4;
+
+/*	this.energyView.setThumbSize = function(value) {
+		if (value + this.sliderValue < view.style.width/4) {
+			console.log("call super");
+			this.energyView.superview.setThumbSize(value);
+		}
+		else {
+			console.log("do nothing");
+		}
+	}*/
+
 	return this.energyView;
 }
 

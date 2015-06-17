@@ -8,8 +8,8 @@ import ui.SpriteView;
 import ui.resource.Image as Image;
 
 	exports.populateGameLayer = function (layer, x) {
-		
-		var yfactor = 30;
+
+		var yfactor = 10;
 		var yspread_tree = util.randInt(5,10);
 		var size = util.choice(['S', 'M', 'L', 'XL']);
 		var space_between = util.randInt(200,600);
@@ -35,7 +35,6 @@ import ui.resource.Image as Image;
 				autoSize: true	 //image size = view size
 			});
 		}
-
 		return mountain.style.width + space_between;
 
 	}

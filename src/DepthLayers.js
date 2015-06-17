@@ -3,18 +3,22 @@ import ui.ImageView;
 import src.platformer.util as util;
 
 exports.addWater =function(parallaxView) {
+
+
 	parallaxView.addLayer({
-		distance: 4,
+
+		distance: 5,
 		populate: function (layer, x) {
+			console.log("layer.style.height: " + layer.style.height);
 			var v = layer.obtainView(ui.ImageView, {
 				superview: layer,
 				image: "resources/images/level/jwater.png",
 				x: x,
 				//backgroundColor: "#0000FF",
-				y: 630,
-				width: 1200,
+				y: layer.style.height-50,
+				width: 1000,
 				opacity: 0.8,
-				height: 100
+				height: 50
 			});
 			return v.style.width;
 		}
