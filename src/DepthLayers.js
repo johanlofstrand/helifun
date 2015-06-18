@@ -9,16 +9,14 @@ exports.addWater =function(parallaxView) {
 
 		distance: 5,
 		populate: function (layer, x) {
-			console.log("layer.style.height: " + layer.style.height);
 			var v = layer.obtainView(ui.ImageView, {
 				superview: layer,
 				image: "resources/images/level/jwater.png",
 				x: x,
-				//backgroundColor: "#0000FF",
-				y: layer.style.height-50,
+				y: layer.style.height-40,
 				width: 1000,
-				opacity: 0.8,
-				height: 50
+				opacity: 1,
+				height: 40
 			});
 			return v.style.width;
 		}
@@ -27,7 +25,7 @@ exports.addWater =function(parallaxView) {
 
 exports.addCloud = function(parallaxView) {
 	parallaxView.addLayer({
-		distance: 5,
+		distance: 6,
 		populate: function (layer, x) {
 			var size = util.choice([1,2,3,4,5]);
 			var v = layer.obtainView(ui.ImageView, {

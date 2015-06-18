@@ -9,7 +9,7 @@ import ui.resource.Image as Image;
 
 	exports.populateGameLayer = function (layer, x) {
 
-		var yfactor = 10;
+		var yfactor = 5;
 		var yspread_tree = util.randInt(5,10);
 		var size = util.choice(['S', 'M', 'L', 'XL']);
 		var space_between = util.randInt(200,600);

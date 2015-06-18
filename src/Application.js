@@ -13,10 +13,10 @@ exports = Class(GC.Application, function () {
 	this.baseHeight = this.boundsHeight; //576
 	this.scale = device.screen.height / this.baseHeight; //1
 
-	console.log("device.screen.width: " + device.screen.width);
-	console.log("baseWidth: " + this.baseWidth);
-	console.log("baseHeight: " + this.baseHeight);
-	console.log("scale: " + this.scale);
+	//console.log("device.screen.width: " + device.screen.width);
+	//console.log("baseWidth: " + this.baseWidth);
+	//console.log("baseHeight: " + this.baseHeight);
+	//console.log("scale: " + this.scale);
 
 	/* Run after the engine is created and the scene graph is in
 	 * place, but before the resources have been loaded.
@@ -42,6 +42,11 @@ exports = Class(GC.Application, function () {
 		rootView.push(titlescreen);
 
 		var sound = applicationextras.loadSound();
+		setTimeout(function () {
+			// This is in a setTimeout because some desktop browsers need
+			// a moment to prepare the sound (this is probably a bug in DevKit)
+			sound.play("start");
+		}.bind(this), 10);
 
 		/* Listen for an event dispatched by the title screen when
 		 * the start button has been pressed. Hide the title screen,
@@ -51,6 +56,7 @@ exports = Class(GC.Application, function () {
 		titlescreen.on('titlescreen:start', function () {
 			console.log("Application - titlescreen:start");
 			rootView.push(gamescreen);
+			sound.stop("start");
 			gamescreen.emit('app:start');
 		});
 

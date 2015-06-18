@@ -17,8 +17,6 @@ import ui.SpriteView;
 			autoStart: true,
 		});
 
-
-
 		Physics.addToView(this.player, {
 			hitbox: {
 				x: 0,
@@ -27,7 +25,6 @@ import ui.SpriteView;
 				height: 60
 			}
 		});
-		console.log("player widht: " + this.player.width);
 		return this.player;
 	}
 	

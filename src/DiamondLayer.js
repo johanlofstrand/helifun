@@ -8,8 +8,7 @@ import device;
 
 exports.populateDiamondLayer = function(layer, x) {
 
-	var spriteid= 1,
-		WIND_SPEED = 0.1;
+
 
 	var diamondballoon = layer.obtainView(DiamondView, {
 				superview: layer,
@@ -22,7 +21,9 @@ exports.populateDiamondLayer = function(layer, x) {
 	}
 
 	var DiamondView = new Class([ui.View, Physics], function (supr) {
-		
+
+		this.WIND_SPEED = 0.1;
+
 		this.init = function(opts) {
 			opts.group = "diamondballoons";
 			opts.hitbox = {
@@ -59,16 +60,16 @@ exports.populateDiamondLayer = function(layer, x) {
 
 		this.tick = function () {
 			this.sprite.style.y--;
-			//this.sprite.style.x = this.sprite.style.x + this.WIND_SPEED;
+		//	this.sprite.style.x = this.sprite.style.x - this.WIND_SPEED;
 			this.hitbox.y = this.sprite.style.y; //must update hitbox due to animation changes position all the time...
 			this.hitbox.x = this.sprite.style.x;
 			
 			if (this.sprite.style.y < -500) { //need to recycle them when they are gone out of screen...
 				//console.log("restart: " + this);
 				this.sprite.style.y = util.randInt(100,500);
-				//this.sprite.removeFromSuperview();	
+				//this.sprite.removeFromSuperview();
 			}
-			//this.WIND_SPEED+=0.01;
+			//this.WIND_SPEED+=0.0001;
 		}
 	});
 		

@@ -66,6 +66,24 @@ exports = Class(ui.View, function (supr) {
             size: 45,
             wrap: true
         });
+
+       /* this.newgameview = new ImageView({
+            superview: this,
+            image: 'resources/images/playbtn.png',
+            width: 100,
+            height: 100,
+            x: this.baseWidth/2,
+            y: this.baseHeight/2,
+            zIndex: 200000
+        });
+
+        this.newgameview.style.visible = true;
+
+        this.newgameview.on('InputSelect', function (event, point) {
+            console.log("This view had touch begin on it at: " + point.x + "," + point.y);
+            this.okToRestart = true;
+        });*/
+
         self.scoreView = InfoViews.setupScoreView(this);
         this.build();
 
@@ -79,23 +97,17 @@ exports = Class(ui.View, function (supr) {
         this.gestureView.on("InputStart", this.onFly.bind(this));
         this.gestureView.on("InputSelect", this.onFlyDone.bind(this));
 
-        this.balloonMessenger = new Emitter();
+       // this.balloonMessenger = new Emitter();
     };
 
     this.build = function() {
         this.on('app:start', resetState.bind(this));
         loader.preload(["resources/images/level", "resources/audio/effects"], function () {
-
             this.energyView = InfoViews.setupEnergyView(this);
-
             self.parallaxView = new ParallaxLayer(this);
             this.addSubview(this.parallaxView );
-
             self.player = playerlogic.setupPlayer();
-
             this.sound = extras.loadSound();
-
-
         }.bind(this));
     };
 
@@ -107,19 +119,19 @@ exports = Class(ui.View, function (supr) {
 
     /*--------------------------------------------------------------------------------------------------------------------------------------------*/
     this.onFly = function() {
-        if (!self.isFinished) {
+        if (!this.isFinished) {
             self.player.velocity.y = -500;
             //	this.player.setAcceleration(this.player.getAcceleration);
         }
         else {
-            self._touchedWhenFinished = true; //player touched to start over...
+            this._touchedWhenFinished = true; //player touched to start over...
         }
     };
 
     this.onFlyDone = function() {
-        if (self._touchedWhenFinished && self.isFinished) {
-            self._touchedWhenFinished = false;
-            //this.emit("gamescreen:end");
+        if (this._touchedWhenFinished && this.isFinished) {
+            this._touchedWhenFinished = false;
+            setTimeout(this.emit("app:start"), 1000);
         }
         else {
             self.player.velocity.y = 300;
@@ -131,6 +143,7 @@ exports = Class(ui.View, function (supr) {
     this.finishGame = function() {
         if (!this.isFinished) {
             this.isFinished = true;
+            this.okToRestart = false;
             //this.sound.play("lose");
             self.player.acceleration.x = -400; //slow down
             self.textView.show();
@@ -138,13 +151,13 @@ exports = Class(ui.View, function (supr) {
                 .now({opacity: 0.7}, 1000)
                 .wait(10000000)
                 .then({opacity: 1});
-          /*  animate(self.scoreView)
+            animate(self.scoreView)
                 .now({
                     dy: 300
                 }, 700, animate.easeIn)
                 .then({scale: 2}, 400, animate.easeIn)
                 .then({scale: 1}, 400, animate.easeOut)
-                .then({y: 0},400)*/
+                .then({y: 0},400)
 
 
 
@@ -182,6 +195,7 @@ function resetState() {
 
 
 function startGame () {
+    this.sound.stop("win");
     setTimeout(function () {
         // This is in a setTimeout because some desktop browsers need
         // a moment to prepare the sound (this is probably a bug in DevKit)
@@ -226,6 +240,7 @@ function tick(dtMS) {
     if (this.isFinished) {
         if (this.player.velocity.x < 0) {
             this.player.stopAllMovement();
+            this.sound.stop("background");
             this.sound.play("win");
         }
     }
@@ -308,27 +323,32 @@ function tick(dtMS) {
     // If they hit a gold balloon
     var hits_g = this.player.getCollisions("medballoons");
     for (i=0; i< hits_g.length; i++) {
-
         var hit = hits_g[i];
         var goldb = hit.view;
         goldb.setCollisionEnabled(false);
         goldb.removeFromSuperview();
-        this.sliderValue = this.sliderValue+(this.energyView.startValue/1000)*1.5;
-        this.energyView.setThumbSize(this.sliderValue);
+        this.sliderValue = this.sliderValue + 150*(this.energyView.startValue/1000);
+        if (this.sliderValue >= this.energyView.startValue) {
+            this.energyView.setThumbSize(this.energyView.startValue);
+        }
+        else {
+            this.energyView.setThumbSize(this.sliderValue);
+        }
         this.no_of_gold_ballons++;
         this.sound.play("medbox");
-        // this.balloonMessenger.emit('NewBalloon',this);
+
 
     }
 
     // If the player fell off the bottom of the screen, game over!
     if (this.player.getY() >= this.parallaxView.gameLayer.style.height) {
-        this.textView.setText("Game over!");
+        this.energyView.setThumbSize(0);
+        this.textView.setText("Game over - press to play again!");
         this.finishGame();
     }
 
     if (this.sliderValue<=0) {
-        this.textView.setText("Game over!");
+        this.textView.setText("Game over - press to play again!");
         this.finishGame();
     }
     if (this.player.getY() <= this.MAX_HEIGHT) {

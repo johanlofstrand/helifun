@@ -4,19 +4,13 @@ import src.platformer.ScoreView as ScoreView;
 
 
 exports.setupEnergyView = function(view) {
-console.log("setupEnergyView");
-	console.log("width: view.style.width/4: " + view.style.width/4);
-	this.boundsWidth = 1000;
 	this.energyView = new SliderView({
-
 		superview: view,
 		x: 0,
 		y: 10,
 		width: view.style.width/4,
 		height: 25,
 		zIndex: 10000,
-	//	offsetX: view.style.width/10,
-	//	offsetY: 10,
 		thumbSize: view.style.width/4,
 		active: true,
 		track: {
@@ -27,7 +21,6 @@ console.log("setupEnergyView");
 			inactiveColor: '#FFFF00'
 		}
      });
-	console.log("ENERGY: " + view.style.width/4);
 	this.energyView.startValue =  view.style.width/4;
 
 /*	this.energyView.setThumbSize = function(value) {

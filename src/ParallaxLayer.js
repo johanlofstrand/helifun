@@ -11,8 +11,6 @@ import src.EnemyLayer as enemylayer;
 import src.BalloonLayer as balloonlayer;
 import src.GoldLayer as goldlayer;
 
-
-
 exports = Class(ParallaxView, function (supr) {
 
     this.init = function (opts) {
@@ -54,7 +52,6 @@ exports = Class(ParallaxView, function (supr) {
         });
 
 
-
         DepthLayers.addWater(this);
         DepthLayers.addCloud(this);
 
@@ -90,7 +87,5 @@ exports = Class(ParallaxView, function (supr) {
             }.bind(this)
 
          });
-
-
     };
 });

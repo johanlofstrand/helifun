@@ -16,7 +16,7 @@ exports = Class(ui.ImageView, function (supr) {
             y: 0,
             width: this.baseWidth,
             height: this.baseHeight,
-            image: "resources/images/TitleScreen.png"
+            image: "resources/images/bgimg.png"
         });
 
         supr(this, 'init', [opts]);
@@ -31,7 +31,6 @@ exports = Class(ui.ImageView, function (supr) {
         });
 
         startbutton.on('InputSelect', bind(this, function () {
-            console.log("start game");
             this.emit('titlescreen:start');
         }));
     };
