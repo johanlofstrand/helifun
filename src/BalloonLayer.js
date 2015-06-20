@@ -18,7 +18,7 @@ exports.populateBalloonLayer = function(layer, x) {
 				width: 120,
 				height: 195,
 			}, {poolSize: 3, group: "balloons"});
-		return util.randInt(1200,2000);
+		return util.randInt(1200,2500);
 	}
 
 	var BalloonView = new Class([ui.View, Physics], function (supr) {

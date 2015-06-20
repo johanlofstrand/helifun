@@ -22,19 +22,27 @@ exports.setupEnergyView = function(view) {
 		}
      });
 	this.energyView.startValue =  view.style.width/4;
+	this.energyView.actualValue = this.energyView.startValue;
 
-/*	this.energyView.setThumbSize = function(value) {
-		if (value + this.sliderValue < view.style.width/4) {
-			console.log("call super");
-			this.energyView.superview.setThumbSize(value);
+	this.energyView.energyUpdate = function(energyPlus) {
+		this.actualValue = this.actualValue + energyPlus;
+		this.updateThumb();
+	};
+
+	this.energyView.updateThumb = function() {
+		console.log("av: " + this.actualValue);
+		console.log("sv: " + this.startValue);
+		if (this.actualValue <= this.startValue) {
+			console.log("set Thumb");
+			this.setThumbSize(this.actualValue);
 		}
 		else {
 			console.log("do nothing");
 		}
-	}*/
+	};
 
 	return this.energyView;
-}
+};
 
 
 exports.setupScoreView = function (view) {

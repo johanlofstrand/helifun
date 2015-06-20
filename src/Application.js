@@ -69,6 +69,17 @@ exports = Class(GC.Application, function () {
 		});
 	};
 
+	device.setBackButtonHandler(function() {
+		return false;
+	});
+
+	/*this.onPause= function() {
+		sound.stop('background');
+		sound.stop('start');
+		sound.stop('win');
+		super.onPause();
+	}*/
+
 	/* Executed after the asset resources have been loaded.
 	 * If there is a splash screen, it's removed.
 	 */

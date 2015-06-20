@@ -19,6 +19,7 @@ import src.platformer.util as util;
 import src.ApplicationExtras as extras;
 import src.InfoViews as InfoViews;
 import src.PlayerLogic as playerlogic;
+//import src.BalloonBoard as BalloonBoard;
 
 
 import src.ParallaxLayer as ParallaxLayer;
@@ -184,8 +185,7 @@ function resetState() {
     that.t = 0;
     that.isFinished = false;
     that.score = 0;
-    that.sliderValue=that.energyView.startValue;
-    that.energyView.setThumbSize(this.sliderValue);
+    that.energyView.setThumbSize(that.energyView.startValue);
     that.no_of_gold_ballons=0;
     //	this.BalloonBoard.removeAllSubviews();
     startGame.call(that);
@@ -263,8 +263,7 @@ function tick(dtMS) {
         this.player.setRotation(0);
         //this.player.resetAnimation();
         animate(this.player).now({dr: -1},50).then({dr: 1},50)
-        this.sliderValue = this.sliderValue-0.5;
-        this.energyView.setThumbSize(this.sliderValue);
+        this.energyView.energyUpdate(-1);
     }
 
     var hits = this.player.getCollisions("diamondballoons");
@@ -283,8 +282,7 @@ function tick(dtMS) {
         var hit = hits_p[i];
         var plane = hit.view;
         this.sound.play("alarm",{loop: false}); //play once
-        this.sliderValue = this.sliderValue-this.energyView.startValue/1000;
-        this.energyView.setThumbSize(this.sliderValue);
+        this.energyView.energyUpdate(-1);
         animate(this.player)
             .now({
                 dr: Math.PI * -2
@@ -299,8 +297,7 @@ function tick(dtMS) {
     var hits_b = this.player.getCollisions("balloons");
     for (var i = 0; i < hits_b.length; i++) {
         this.sound.play("alarm")	; //play once
-        this.sliderValue = this.sliderValue - this.energyView.startValue/1000;
-        this.energyView.setThumbSize(this.sliderValue);
+        this.energyView.energyUpdate(-1);
         animate(this.player)
             .now({
                 r: Math.PI * 2
@@ -311,9 +308,8 @@ function tick(dtMS) {
     // If they hit a zep
     var hits_z = this.player.getCollisions("zeps");
     for (var i = 0; i < hits_z.length; i++) {
-        this.sliderValue = this.sliderValue-this.energyView.startValue/1000;
         this.sound.play("alarm",{loop: false}); //play once
-        this.energyView.setThumbSize(this.sliderValue);
+        this.energyView.energyUpdate(-1);
         animate(this.player)
             .now({r: 0.2}, 60)
             .then({r:-0.2},60)
@@ -327,13 +323,7 @@ function tick(dtMS) {
         var goldb = hit.view;
         goldb.setCollisionEnabled(false);
         goldb.removeFromSuperview();
-        this.sliderValue = this.sliderValue + 150*(this.energyView.startValue/1000);
-        if (this.sliderValue >= this.energyView.startValue) {
-            this.energyView.setThumbSize(this.energyView.startValue);
-        }
-        else {
-            this.energyView.setThumbSize(this.sliderValue);
-        }
+        this.energyView.energyUpdate(100);
         this.no_of_gold_ballons++;
         this.sound.play("medbox");
 
@@ -347,7 +337,7 @@ function tick(dtMS) {
         this.finishGame();
     }
 
-    if (this.sliderValue<=0) {
+    if (this.energyView.actualValue<=0) {
         this.textView.setText("Game over - press to play again!");
         this.finishGame();
     }

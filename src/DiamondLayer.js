@@ -24,6 +24,8 @@ exports.populateDiamondLayer = function(layer, x) {
 
 		this.WIND_SPEED = 0.1;
 
+		this.diatype = null;
+
 		this.init = function(opts) {
 			opts.group = "diamondballoons";
 			opts.hitbox = {
@@ -39,12 +41,13 @@ exports.populateDiamondLayer = function(layer, x) {
 
 			this.getSpriteName = function() {
 				if (Math.random() <= 0.5) {
-					return "greendiab";
+					this.diatype =  "greendiab";
 				}
 				else {
-					return "reddiab";
+					this.diatype =  "reddiab";
 				}
-			}
+				return this.diatype;
+			};
 
 			var sprite = this.sprite = new ui.SpriteView({
 				superview: this,
@@ -55,7 +58,6 @@ exports.populateDiamondLayer = function(layer, x) {
 				frameRate: 3,
 				autoStart: true
 			});
-
 		},
 
 		this.tick = function () {
