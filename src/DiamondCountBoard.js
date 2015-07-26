@@ -10,8 +10,7 @@ exports.setupDiamondCountView = function (view,diamondType,spaceFromEdge) {
 		width: 37,
 		height: 47,
 		superview: view,
-		//backgroundColor: "#FFFFFF",
-		x:view.style.width - spaceFromEdge -50,
+		x:view.style.width - spaceFromEdge -30,
 		y:10,
 		image: 'resources/images/diamonds/'+diamondType+'.png'
 	});
@@ -22,7 +21,7 @@ exports.setupDiamondCountView = function (view,diamondType,spaceFromEdge) {
 		x: view.style.width-spaceFromEdge,
 		y: 10,
 		height: 40,
-		width: 55,
+		width: 100,
 		anchorX: view.style.width /2,
 		anchorY: view.style.height,
 		charWidth: 25,
@@ -32,7 +31,7 @@ exports.setupDiamondCountView = function (view,diamondType,spaceFromEdge) {
 	});
 
 	return this.diamondCountView;
-}
+};
 
 
 

@@ -70,9 +70,7 @@ exports = Class(ui.View, function (supr) {
 
         self.scoreView = InfoViews.setupScoreView(this);
         self.diamondCountViewGreen = DiamondCountBoard.setupDiamondCountView(this,'greendia',200);
-        self.diamondCountViewGreen.setText(0);
         self.diamondCountViewRed = DiamondCountBoard.setupDiamondCountView(this,'reddia',350);
-        self.diamondCountViewRed.setText(0);
 
         this.build();
 
@@ -331,7 +329,7 @@ function tick(dtMS) {
     }
 
     if (this.energyView.actualValue<0) {
-        this.textView.setText("Game over - press to play again!!");
+        this.textView.setText("Game over - press to play again!");
         this.finishGame();
     }
     if (this.player.getY() <= this.MAX_HEIGHT) {
