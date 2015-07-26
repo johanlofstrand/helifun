@@ -273,7 +273,7 @@ function tick(dtMS) {
         var hit = hits_p[i];
         var plane = hit.view;
         this.sound.play("alarm",{loop: false}); //play once
-        this.energyView.energyUpdate(-1);
+        this.energyView.energyUpdate(-1,'planes');
         animate(this.player)
             .now({
                 dr: Math.PI * -2
@@ -287,8 +287,9 @@ function tick(dtMS) {
     // If they hit an balloon
     var hits_b = this.player.getCollisions("balloons");
     for (var i = 0; i < hits_b.length; i++) {
+        hits_b[i].view.setCollisionEnabled(false);
         this.sound.play("alarm")	; //play once
-        this.energyView.energyUpdate(-1);
+        this.energyView.energyUpdate(-1,'balloons');
         animate(this.player)
             .now({
                 r: Math.PI * 2
@@ -300,7 +301,7 @@ function tick(dtMS) {
     var hits_z = this.player.getCollisions("zeps");
     for (var i = 0; i < hits_z.length; i++) {
         this.sound.play("alarm",{loop: false}); //play once
-        this.energyView.energyUpdate(-1);
+        this.energyView.energyUpdate(-1,'zeps');
         animate(this.player)
             .now({r: 0.2}, 60)
             .then({r:-0.2},60)

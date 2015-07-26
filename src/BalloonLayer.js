@@ -19,10 +19,10 @@ exports.populateBalloonLayer = function(layer, x) {
 				height: 195,
 			}, {poolSize: 3, group: "balloons"});
 		return util.randInt(1200,2500);
-	}
+	};
 
 	var BalloonView = new Class([ui.View, Physics], function (supr) {
-		
+
 		this.init = function(opts) {
 			opts.group = "balloons";
 			opts.hitbox = {  //rather player friendly hitbox
