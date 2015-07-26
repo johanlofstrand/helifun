@@ -19,7 +19,7 @@ import src.platformer.util as util;
 import src.ApplicationExtras as extras;
 import src.InfoViews as InfoViews;
 import src.PlayerLogic as playerlogic;
-//import src.BalloonBoard as BalloonBoard;
+import src.DiamondCountBoard as DiamondCountBoard;
 
 
 import src.ParallaxLayer as ParallaxLayer;
@@ -68,24 +68,12 @@ exports = Class(ui.View, function (supr) {
             wrap: true
         });
 
-       /* this.newgameview = new ImageView({
-            superview: this,
-            image: 'resources/images/playbtn.png',
-            width: 100,
-            height: 100,
-            x: this.baseWidth/2,
-            y: this.baseHeight/2,
-            zIndex: 200000
-        });
-
-        this.newgameview.style.visible = true;
-
-        this.newgameview.on('InputSelect', function (event, point) {
-            console.log("This view had touch begin on it at: " + point.x + "," + point.y);
-            this.okToRestart = true;
-        });*/
-
         self.scoreView = InfoViews.setupScoreView(this);
+        self.diamondCountViewGreen = DiamondCountBoard.setupDiamondCountView(this,'greendia',200);
+        self.diamondCountViewGreen.setText(0);
+        self.diamondCountViewRed = DiamondCountBoard.setupDiamondCountView(this,'reddia',350);
+        self.diamondCountViewRed.setText(0);
+
         this.build();
 
         this.gestureView = new GestureView({
@@ -143,6 +131,7 @@ exports = Class(ui.View, function (supr) {
 
     this.finishGame = function() {
         if (!this.isFinished) {
+            console.log("In finishGame");
             this.isFinished = true;
             this.okToRestart = false;
             //this.sound.play("lose");
@@ -159,11 +148,8 @@ exports = Class(ui.View, function (supr) {
                 .then({scale: 2}, 400, animate.easeIn)
                 .then({scale: 1}, 400, animate.easeOut)
                 .then({y: 0},400)
-
-
-
         }
-    }
+    };
 
 
     /* -------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -185,7 +171,9 @@ function resetState() {
     that.t = 0;
     that.isFinished = false;
     that.score = 0;
-    that.energyView.setThumbSize(that.energyView.startValue);
+    that.no_of_green_diamonds = 0;
+    that.no_of_red_diamonds = 0;
+    that.energyView.energyUpdate(10000);
     that.no_of_gold_ballons=0;
     //	this.BalloonBoard.removeAllSubviews();
     startGame.call(that);
@@ -252,8 +240,8 @@ function tick(dtMS) {
             Math.min(0, this.player.getTop() - this.parallaxView.gameLayer.style.height / 4));
         this.scoreView.setText(this.score | 0);
         this.score += this.SCORE_TIME;
-
-
+        this.diamondCountViewGreen.setText(this.no_of_green_diamonds);
+        this.diamondCountViewRed.setText(this.no_of_red_diamonds);
     }
 
     var hits_ground = this.player.getCollisions("ground");
@@ -268,9 +256,14 @@ function tick(dtMS) {
 
     var hits = this.player.getCollisions("diamondballoons");
     for (var i = 0; i < hits.length; i++) {
-        this.score += this.SCORE_STAR;
         var hit = hits[i];
         var diaballoon = hit.view;
+        if (diaballoon.diatype === 'reddiab') {
+            this.no_of_red_diamonds++;
+        }
+        else if (diaballoon.diatype === 'greendiab') {
+            this.no_of_green_diamonds++;
+        }
         diaballoon.setCollisionEnabled(false);
         diaballoon.removeFromSuperview();
         this.sound.play("star");
@@ -337,8 +330,8 @@ function tick(dtMS) {
         this.finishGame();
     }
 
-    if (this.energyView.actualValue<=0) {
-        this.textView.setText("Game over - press to play again!");
+    if (this.energyView.actualValue<0) {
+        this.textView.setText("Game over - press to play again!!");
         this.finishGame();
     }
     if (this.player.getY() <= this.MAX_HEIGHT) {

@@ -46,6 +46,7 @@ exports.populateDiamondLayer = function(layer, x) {
 				else {
 					this.diatype =  "reddiab";
 				}
+				console.log(this.diatype);
 				return this.diatype;
 			};
 

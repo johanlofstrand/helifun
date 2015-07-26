@@ -26,19 +26,10 @@ exports.setupEnergyView = function(view) {
 
 	this.energyView.energyUpdate = function(energyPlus) {
 		this.actualValue = this.actualValue + energyPlus;
-		this.updateThumb();
-	};
-
-	this.energyView.updateThumb = function() {
-		console.log("av: " + this.actualValue);
-		console.log("sv: " + this.startValue);
-		if (this.actualValue <= this.startValue) {
-			console.log("set Thumb");
-			this.setThumbSize(this.actualValue);
+		if (this.actualValue >= this.startValue) {
+			this.actualValue = this.startValue;
 		}
-		else {
-			console.log("do nothing");
-		}
+		this.setThumbSize(this.actualValue);
 	};
 
 	return this.energyView;
