@@ -1,18 +1,18 @@
 {
   "android": {
     "icons": {
+      "144": "resources/icons/android144.png",
+      "192": "resources/icons/android192.png",
       "36": "resources/icons/android36.png",
       "48": "resources/icons/android48.png",
       "72": "resources/icons/android72.png",
-      "96": "resources/icons/android96.png",
-      "144": "resources/icons/android144.png",
-      "192": "resources/icons/android192.png"
+      "96": "resources/icons/android96.png"
     },
     "versionCode": 1
   },
   "appID": "helifun",
   "dependencies": {
-    "devkit-core": "https://github.com/gameclosure/devkit-core#v3.0.0-rc1"
+    "devkit-core": "https://github.com/gameclosure/devkit-core#v3.0.1"
   },
   "description": "A simple kids game - fly a helicopter and collect diamonds",
   "icon": "resources/icons/icon512.png",
@@ -24,5 +24,6 @@
   "supportedOrientations": [
     "landscape"
   ],
-  "title": "Helifly"
+  "fonts": [],
+  "title": "Helifun"
 }

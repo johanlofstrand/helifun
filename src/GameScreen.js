@@ -3,7 +3,6 @@ import ui.ImageView as ImageView;
 import ui.SpriteView;
 import ui.ImageScaleView;
 import ui.resource.loader as loader;
-import ui.TextView;
 import animate;
 
 import src.platformer.Physics as Physics;
@@ -36,12 +35,13 @@ exports = Class(ui.View, function (supr) {
 
         supr(this, 'init', [opts]);
 
-        this.textView = new ui.TextView({
+        this.endView = new ImageView({
             superview: this,
-            layout: 'box',
-            text: "Game over!",
-            size: 45,
-            wrap: true
+            image: 'resources/images/end.png',
+            width: 400,
+            height: 200,
+            x: opts.width/2-200,
+            y: opts.height/2-100
         });
 
         this._scoreView = InfoViews.setupScoreView(this);
@@ -118,7 +118,7 @@ function startGame () {
     this.parallaxView.scrollTo(0, 0);
     this.parallaxView.clear();
 
-    this.textView.hide();
+    this.endView.hide();
 
     this.player.setCollisionEnabled(true);
     this.player.style.r = 0;
@@ -233,12 +233,10 @@ function tick(dtMS) {
 
     if (this.player.getY() >= this.parallaxView.groundLayer.style.height) {
         this.energyView.setThumbSize(0);
-        this.textView.setText("Game over - press to play again!");
         finishGame(this);
     }
 
     if (this.energyView.actualValue<0) {
-        this.textView.setText("Game over - press to play again!");
         finishGame(this);
     }
     if (this.player.getY() <= this.MAX_HEIGHT) {
@@ -252,7 +250,7 @@ function finishGame(that) {
         that.isFinished = true;
         clearInterval(that.tickInterval);
         that.player.acceleration.x = -400;
-        that.textView.show();
+        that.endView.show();
         animate(that.parallaxView)
             .now({opacity: 0.7}, 1000)
             .wait(10000000)
