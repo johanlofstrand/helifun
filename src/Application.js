@@ -20,7 +20,7 @@ exports = Class(GC.Application, function () {
 	 */
 	this.initUI = function () {
 		var titlescreen = new TitleScreen(),
-			gamescreen = new GameScreen();
+			gamescreen = new GameScreen({width: this.baseWidth, height: this.baseHeight});
 
 		this.view.style.backgroundColor = '#87CEFA';
 

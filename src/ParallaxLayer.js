@@ -13,8 +13,8 @@ exports = Class(ParallaxView, function (supr) {
 
     this.init = function (opts) {
         opts = merge(opts, {
-            width:	opts.baseWidth,
-            height: opts.baseHeight,
+            width:	opts.width,
+            height: opts.height,
             scale: 1 //important - we want title screen to scale but not this view.
         });
 

@@ -20,13 +20,8 @@ import src.ParallaxLayer as ParallaxLayer;
 import event.Emitter as Emitter;
 import src.platformer.GestureView as GestureView;
 
-import device;
 
 exports = Class(ui.View, function (supr) {
-
-    this.baseHeight  = 760;
-    this.baseWidth = device.screen.width * (this.baseHeight / device.screen.height);
-    this.scale = device.screen.height / this.baseHeight;
 
     this.GRAVITY = 0;
     this.PLAYER_INITIAL_SPEED = 150;
@@ -34,20 +29,20 @@ exports = Class(ui.View, function (supr) {
     this.SCORE_TIME = 1;
     this.MAX_HEIGHT = -400;
 
-    var self = this;
 
     this.init = function (opts) {
+
         opts = merge(opts, {
-            width: this.baseWidth,
-            height: this.baseHeight,
+            width: opts.width,
+            height: opts.height,
             x: 0,
             y: 0,
-            scale: 1
+            scale:1
         });
 
         supr(this, 'init', [opts]);
 
-        self.textView = new ui.TextView({
+        this.textView = new ui.TextView({
             superview: this,
             layout: 'box',
             fontFamily: 'BPreplayBold',
@@ -56,36 +51,30 @@ exports = Class(ui.View, function (supr) {
             wrap: true
         });
 
-        self.scoreView = InfoViews.setupScoreView(this);
-        self.diamondCountViewGreen = DiamondCountBoard.setupDiamondCountView(this,'greendia',200);
-        self.diamondCountViewRed = DiamondCountBoard.setupDiamondCountView(this,'reddia',350);
-
-        this.build();
+        this._scoreView = InfoViews.setupScoreView(this);
+        this.diamondCountViewGreen = DiamondCountBoard.setupDiamondCountView(this,'greendia',200);
+        this.diamondCountViewRed = DiamondCountBoard.setupDiamondCountView(this,'reddia',350);
 
         this.gestureView = new GestureView({
             superview: this,
-            width: this.baseWidth,
-            height: this.baseHeight,
+            width: opts.width,
+            height: opts.height,
             zIndex: 10000
         });
 
         this.gestureView.on("InputStart", this.onFly.bind(this));
         this.gestureView.on("InputSelect", this.onFlyDone.bind(this));
 
-       // this.balloonMessenger = new Emitter();
-    };
-
-    this.build = function() {
         this.on('app:start', resetState.bind(this));
         loader.preload(["resources/images/level", "resources/audio/effects"], function () {
             this.energyView = InfoViews.setupEnergyView(this);
-            self.parallaxView = new ParallaxLayer(this);
+            this.parallaxView = new ParallaxLayer({width: opts.width, height: opts.height});
             this.addSubview(this.parallaxView );
-            self.player = playerlogic.setupPlayer();
+            this.player = playerlogic.setupPlayer();
             this.sound = Sounds.loadSound();
         }.bind(this));
-    };
 
+    };
 
 
     /* -------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -95,7 +84,7 @@ exports = Class(ui.View, function (supr) {
     /*--------------------------------------------------------------------------------------------------------------------------------------------*/
     this.onFly = function() {
         if (!this.isFinished) {
-            self.player.velocity.y = -500;
+            this.player.velocity.y = -500;
             //	this.player.setAcceleration(this.player.getAcceleration);
         }
         else {
@@ -109,35 +98,12 @@ exports = Class(ui.View, function (supr) {
             setTimeout(this.emit("app:start"), 1000);
         }
         else {
-            self.player.velocity.y = 300;
+            this.player.velocity.y = 300;
 
         }
         //this.player.setVelocity(this.player.getVelocity(),100);
     };
-
-    this.finishGame = function() {
-        if (!this.isFinished) {
-            this.isFinished = true;
-            this.okToRestart = false;
-            //this.sound.play("lose");
-            self.player.acceleration.x = -400; //slow down
-            self.textView.show();
-            animate(self.parallaxView)
-                .now({opacity: 0.7}, 1000)
-                .wait(10000000)
-                .then({opacity: 1});
-            animate(self.scoreView)
-                .now({
-                    dy: 300
-                }, 700, animate.easeIn)
-                .then({scale: 2}, 400, animate.easeIn)
-                .then({scale: 1}, 400, animate.easeOut)
-                .then({y: 0},400);
-          //  this.endScreen = EndScreen.setupEndScreen(this);
-        }
-    };
-
-
+    
     /* -------------------------------------------------------------------------------------------------------------------------------------------*/
 
     /*Start and stop and run game*/
@@ -146,12 +112,10 @@ exports = Class(ui.View, function (supr) {
 });
 
 
-
-
 function resetState() {
     var that = this;
     if (that.isFinished) {
-        animate(that.scoreView).commit();
+        animate(that._scoreView).commit();
         animate(that.parallaxView).commit();
     }
     that.t = 0;
@@ -161,12 +125,8 @@ function resetState() {
     that.no_of_red_diamonds = 0;
     that.energyView.energyUpdate(10000);
     that.no_of_gold_ballons=0;
-    //	this.BalloonBoard.removeAllSubviews();
     startGame.call(that);
-
-};
-
-
+}
 
 function startGame () {
     this.sound.stop("start");
@@ -200,8 +160,6 @@ function startGame () {
     tick.bind(this);
 }
 
-
-
 function tick(dtMS) {
 
     if (!this.loaded) {
@@ -221,7 +179,7 @@ function tick(dtMS) {
 
         this.parallaxView.groundLayer.scrollTo(this.player.getLeft() - 300,
             Math.min(0, this.player.getTop() - this.parallaxView.groundLayer.style.height / 4));
-        this.scoreView.setText(this.score | 0);
+        this._scoreView.setText(this.score | 0);
         this.score += this.SCORE_TIME;
         this.diamondCountViewGreen.setText(this.no_of_green_diamonds);
         this.diamondCountViewRed.setText(this.no_of_red_diamonds);
@@ -305,16 +263,36 @@ function tick(dtMS) {
     if (this.player.getY() >= this.parallaxView.groundLayer.style.height) {
         this.energyView.setThumbSize(0);
         this.textView.setText("Game over - press to play again!");
-        this.finishGame();
+        finishGame(this);
     }
 
     if (this.energyView.actualValue<0) {
         this.textView.setText("Game over - press to play again!");
-        this.finishGame();
+        finishGame(this);
     }
     if (this.player.getY() <= this.MAX_HEIGHT) {
         this.player.velocity.y = 500;
     }
 
+}
+
+
+function finishGame(that) {
+    if (!that.isFinished) {
+        that.isFinished = true;
+        that.player.acceleration.x = -400; //slow down
+        that.textView.show();
+        animate(that.parallaxView)
+            .now({opacity: 0.7}, 1000)
+            .wait(10000000)
+            .then({opacity: 1});
+        animate(that._scoreView)
+            .now({
+                dy: 300
+            }, 700, animate.easeIn)
+            .then({scale: 2}, 400, animate.easeIn)
+            .then({scale: 1}, 400, animate.easeOut)
+            .then({y: 0},400);
+    }
 }
 
