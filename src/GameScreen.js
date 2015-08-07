@@ -19,7 +19,6 @@ import src.DiamondCountBoard as DiamondCountBoard;
 import src.ParallaxLayer as ParallaxLayer;
 import event.Emitter as Emitter;
 import src.platformer.GestureView as GestureView;
-import src.GameLogic as GameLogic;
 
 import device;
 
@@ -170,7 +169,7 @@ function resetState() {
 
 
 function startGame () {
-    this.sound.stop("win");
+    this.sound.stop("start");
     setTimeout(function () {
         // This is in a setTimeout because some desktop browsers need
         // a moment to prepare the sound (this is probably a bug in DevKit)
@@ -189,7 +188,7 @@ function startGame () {
         .setPosition(300, 300)
         .setVelocity(this.PLAYER_INITIAL_SPEED, 0)
         .setAcceleration(this.WORLD_ACCELERATION, this.GRAVITY);
-    this.parallaxView.gameLayer.addSubview(this.player);
+    this.parallaxView.groundLayer.addSubview(this.player);
     // this flag allows the tick function below to begin stepping.
     Physics.start();
     this.loaded = true;
@@ -213,15 +212,15 @@ function tick(dtMS) {
         if (this.player.velocity.x < 0) {
             this.player.stopAllMovement();
             this.sound.stop("background");
-            this.sound.play("win");
+            this.sound.play("start");
         }
     }
     else {
         this.player.acceleration.y = this.GRAVITY;
         this.score += this.SCORE_TIME;
 
-        this.parallaxView.gameLayer.scrollTo(this.player.getLeft() - 300,
-            Math.min(0, this.player.getTop() - this.parallaxView.gameLayer.style.height / 4));
+        this.parallaxView.groundLayer.scrollTo(this.player.getLeft() - 300,
+            Math.min(0, this.player.getTop() - this.parallaxView.groundLayer.style.height / 4));
         this.scoreView.setText(this.score | 0);
         this.score += this.SCORE_TIME;
         this.diamondCountViewGreen.setText(this.no_of_green_diamonds);
@@ -303,7 +302,7 @@ function tick(dtMS) {
     }
 
     // If the player fell off the bottom of the screen, game over!
-    if (this.player.getY() >= this.parallaxView.gameLayer.style.height) {
+    if (this.player.getY() >= this.parallaxView.groundLayer.style.height) {
         this.energyView.setThumbSize(0);
         this.textView.setText("Game over - press to play again!");
         this.finishGame();

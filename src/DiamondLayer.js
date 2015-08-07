@@ -13,7 +13,7 @@ exports.populateDiamondLayer = function(layer, x) {
 				y: util.randInt(100,500),
 				width: 80,
 				height: 180
-			}, {poolSize: 8, group: "diamondballoons"});
+			}, {poolSize: 6, group: "diamondballoons"});
 		return util.randInt(700,2400);
 	};
 

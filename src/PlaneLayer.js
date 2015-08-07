@@ -2,24 +2,23 @@ import src.platformer.Physics as Physics;
 import ui.View;
 import ui.ImageView;
 import src.platformer.util as util;
-import resources.starGrids as starGrids;
 import animate;
 import ui.SpriteView;
 
-exports.populateEnemyLayer = function(layer, x) {
+exports.populatePlaneLayer = function(layer, x) {
 
-	layer.obtainView(EnemyAirplaneView, {
+	layer.obtainView(AirplaneView, {
 				
 				superview: layer,
 				x: x+1000,
 				y: util.randInt(0,100),
 				width: 124,
-				height: 60,
+				height: 60
 			}, {poolSize: 3, group: "planes"});
 		return util.randInt(2000,10000);
 	};
 
-	var EnemyAirplaneView = new Class([ui.View, Physics], function (supr) {
+	var AirplaneView = new Class([ui.View, Physics], function (supr) {
 		
 		this.init = function(opts) {
 			opts.group = "planes";
@@ -39,7 +38,7 @@ exports.populateEnemyLayer = function(layer, x) {
 				height: 60,
 				url: "resources/images/enemies/jairplane1",
 				defaultAnimation: "fly",
-				autoStart: true,
+				autoStart: true
 			});
 
 		};

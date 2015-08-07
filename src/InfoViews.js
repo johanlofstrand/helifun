@@ -14,7 +14,7 @@ exports.setupEnergyView = function(view) {
 		thumbSize: view.style.width/4,
 		active: true,
 		track: {
-			activeColor: '#FFFFFF' 
+			activeColor: '#FFFFFF'
 		},
 		thumb: {
 			activeColor: '#FFFF00', //bg color...
@@ -49,7 +49,7 @@ exports.setupScoreView = function (view) {
 		charWidth: 25,
 		charHeight: 35,
 		text: "0",
-		url: 'resources/images/numbers/{}.png',
+		url: 'resources/images/numbers/{}.png'
 	});
 	return this.scoreView;
 }

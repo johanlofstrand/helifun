@@ -2,12 +2,11 @@ import src.platformer.Physics as Physics;
 import ui.View;
 import ui.ImageView;
 import src.platformer.util as util;
-import resources.starGrids as starGrids;
 import animate;
 import ui.SpriteView;
 import ui.resource.Image as Image;
 
-	exports.populateGameLayer = function (layer, x) {
+	exports.populateGroundLayer = function (layer, x) {
 
 		var yfactor = 7;
 		var yspread_tree = util.randInt(5,10);

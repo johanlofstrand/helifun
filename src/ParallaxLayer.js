@@ -1,15 +1,13 @@
-import animate;
 import ui.View;
 import ui.ImageView;
 import src.platformer.ParallaxView as ParallaxView;
-import ui.TextView;
-import src.GameLayer as gamelayer;
+import src.GroundLayer as groundlayer;
 import src.ZepLayer as zeplayer;
 import src.DiamondLayer as diamondlayer;
 import src.DepthLayers as DepthLayers;
-import src.EnemyLayer as enemylayer;
+import src.PlaneLayer as planelayer;
 import src.BalloonLayer as balloonlayer;
-import src.GoldLayer as goldlayer;
+import src.MedBalloonLayer as medballoonlayer;
 
 exports = Class(ParallaxView, function (supr) {
 
@@ -27,36 +25,28 @@ exports = Class(ParallaxView, function (supr) {
         this.build();
     };
 
-    /*
-     * Layout
-     */
     this.build = function () {
 
         this.style.backgroundColor = "#87CEFA";
 
-        this.zepLayer = this.addLayer({
+        this.groundLayer = this.addLayer({  //groundlayer needs to be defined cause player is added to it in gamescreen
+            distance: 7,
+            populate: function (layer, x) {
+                return groundlayer.populateGroundLayer(layer, x);
+            }.bind(this)
+        });
+
+        this.addLayer({
             distance: 7,
             populate: function (layer, x) {
                 return zeplayer.populateZepLayer(layer, x);
             }.bind(this)
-
         });
-
-
-        this.gameLayer = this.addLayer({
-            distance: 7,
-            populate: function (layer, x) {
-                return gamelayer.populateGameLayer(layer, x);
-            }.bind(this)
-
-        });
-
 
         DepthLayers.addWater(this);
         DepthLayers.addCloud(this);
 
-
-        this.diamondLayer = this.addLayer({
+        this.addLayer({
             distance: 7,
             populate: function (layer, x) {
                 return diamondlayer.populateDiamondLayer(layer, x);
@@ -64,15 +54,15 @@ exports = Class(ParallaxView, function (supr) {
 
         });
 
-        this.enemyLayer = this.addLayer({
+        this.addLayer({
             distance: 7,
             populate: function (layer, x) {
-                return enemylayer.populateEnemyLayer(layer, x);
+                return planelayer.populatePlaneLayer(layer, x);
             }.bind(this)
 
         });
 
-        this.balloonLayer = this.addLayer({
+        this.addLayer({
             distance: 7,
             populate: function (layer, x) {
                 return balloonlayer.populateBalloonLayer(layer, x);
@@ -80,10 +70,10 @@ exports = Class(ParallaxView, function (supr) {
 
         });
 
-        this.goldLayer = this.addLayer({
+        this.addLayer({
             distance: 7,
             populate: function (layer, x) {
-                return goldlayer.populateGoldLayer(layer, x);
+                return medballoonlayer.populateMedBalloonLayer(layer, x);
             }.bind(this)
 
          });

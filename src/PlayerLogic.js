@@ -1,9 +1,8 @@
-import device;
 import src.platformer.Physics as Physics;
 import ui.SpriteView;
 
 exports.setupPlayer = function () {
-	var player = this.player = new ui.SpriteView({
+	var player = new ui.SpriteView({
 		zIndex: 1,
 		x: 0,
 		y: 350,
@@ -16,8 +15,7 @@ exports.setupPlayer = function () {
 		autoStart: true
 	});
 
-
-	Physics.addToView(this.player, {
+	Physics.addToView(player, {
 		hitbox: {
 			x: 0,
 			y: 20,
@@ -25,6 +23,6 @@ exports.setupPlayer = function () {
 			height: 60
 		}
 	});
-	return this.player;
+	return player;
 };
 	
