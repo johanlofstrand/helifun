@@ -57,7 +57,7 @@ exports.populateZepLayer = function(layer, x) {
 		};
 
 		this.tick = function () {
-			this.hitbox.y = this.sprite.style.y; //must update hitbox due to animation changes position all the time...
+			this.hitbox.y = this.sprite.style.y;
 			this.hitbox.x = this.sprite.style.x;
 			if (this.tick %3) this.style.x--;
 		};

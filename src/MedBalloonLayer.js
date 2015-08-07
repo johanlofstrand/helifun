@@ -21,7 +21,7 @@ exports.populateMedBalloonLayer = function(layer, x) {
 		
 		this.init = function(opts) {
 			opts.group = "medballoons";
-			opts.hitbox = {  //rather player friendly hitbox
+			opts.hitbox = {
 				x: 0,
 				y: 0,
 				width: 52,
@@ -64,5 +64,3 @@ exports.populateMedBalloonLayer = function(layer, x) {
 		};
 
 	});
-		
-

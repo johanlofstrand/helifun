@@ -25,15 +25,15 @@ import ui.resource.Image as Image;
 
 		Physics.addToView(mountain, {group: "ground"});
 
-		if (util.randInt(1,3) === 1 && size!= 'L') {  //L sized mountain not good fit for tree...
+		if (util.randInt(1,3) === 1 && size!= 'L') {
 			var tree = layer.obtainView(ui.ImageView, {
 				superview: layer,
 				image: "resources/images/level/jtree1.png",
 				x: x + 550 + util.randInt(80, 150),
 				y: layer.style.height - 40 - mountain_height - yfactor - yspread_tree,
-				autoSize: true	 //image size = view size
+				autoSize: true
 			});
 		}
 		return mountain.style.width + space_between;
 
-	}
+	};

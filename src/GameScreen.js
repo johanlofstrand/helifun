@@ -4,10 +4,7 @@ import ui.SpriteView;
 import ui.ImageScaleView;
 import ui.resource.loader as loader;
 import ui.TextView;
-import math.geom.Rect as Rect;
-import math.geom.Point as Point;
 import animate;
-import AudioManager;
 
 import src.platformer.Physics as Physics;
 import src.platformer.ScoreView as ScoreView;
@@ -17,18 +14,15 @@ import src.InfoViews as InfoViews;
 import src.PlayerLogic as playerlogic;
 import src.DiamondCountBoard as DiamondCountBoard;
 import src.ParallaxLayer as ParallaxLayer;
-import event.Emitter as Emitter;
 import src.platformer.GestureView as GestureView;
-
 
 exports = Class(ui.View, function (supr) {
 
     this.GRAVITY = 0;
     this.PLAYER_INITIAL_SPEED = 150;
-    this.WORLD_ACCELERATION = 9;
+    this.WORLD_ACCELERATION = 15;
     this.SCORE_TIME = 1;
     this.MAX_HEIGHT = -400;
-
 
     this.init = function (opts) {
 
@@ -76,16 +70,9 @@ exports = Class(ui.View, function (supr) {
 
     };
 
-
-    /* -------------------------------------------------------------------------------------------------------------------------------------------*/
-
-    /*Input controls*/
-
-    /*--------------------------------------------------------------------------------------------------------------------------------------------*/
     this.onFly = function() {
         if (!this.isFinished) {
             this.player.velocity.y = -500;
-            //	this.player.setAcceleration(this.player.getAcceleration);
         }
         else {
             this._touchedWhenFinished = true; //player touched to start over...
@@ -101,14 +88,8 @@ exports = Class(ui.View, function (supr) {
             this.player.velocity.y = 300;
 
         }
-        //this.player.setVelocity(this.player.getVelocity(),100);
     };
 
-    /* -------------------------------------------------------------------------------------------------------------------------------------------*/
-
-    /*Start and stop and run game*/
-
-    /*--------------------------------------------------------------------------------------------------------------------------------------------*/
 });
 
 
@@ -131,8 +112,6 @@ function resetState() {
 function startGame () {
     this.sound.stop("start");
     setTimeout(function () {
-        // This is in a setTimeout because some desktop browsers need
-        // a moment to prepare the sound (this is probably a bug in DevKit)
         this.sound.play("background");
     }.bind(this), 10);
 
@@ -149,11 +128,10 @@ function startGame () {
         .setVelocity(this.PLAYER_INITIAL_SPEED, 0)
         .setAcceleration(this.WORLD_ACCELERATION, this.GRAVITY);
     this.parallaxView.groundLayer.addSubview(this.player);
-    // this flag allows the tick function below to begin stepping.
     Physics.start();
     this.loaded = true;
 
-    var dt = Math.min(this.dtMS / 1000, 1/30); //return lowest value of these
+    var dt = Math.min(this.dtMS / 1000, 1/30);
     this.t += dt;
 
     this.tickInterval = setInterval(tick.bind(this), dt);
@@ -188,9 +166,7 @@ function tick(dtMS) {
     var hits_ground = this.player.getCollisions("ground");
     for (var i = 0; i < hits_ground.length; i++) {
         this.sound.play("alarm",{loop: false}); //play once
-        //animate(this.player).clear();
         this.player.setRotation(0);
-        //this.player.resetAnimation();
         animate(this.player).now({dr: -1},50).then({dr: 1},50)
         this.energyView.energyUpdate(-1);
     }
@@ -214,22 +190,19 @@ function tick(dtMS) {
     for (var i = 0; i < hits_p.length; i++) {
         var hit = hits_p[i];
         var plane = hit.view;
-        this.sound.play("alarm",{loop: false}); //play once
+        this.sound.play("alarm",{loop: false});
         this.energyView.energyUpdate(-1,'planes');
         animate(this.player)
             .now({
                 dr: Math.PI * -2
             }, 500).
             then({r:0}, 1);
-
-        //console.log("finishGame");
-        //this.finishGame();  //will finish anyway, ground rule
     }
 
     var hits_b = this.player.getCollisions("balloons");
     for (var i = 0; i < hits_b.length; i++) {
         hits_b[i].view.setCollisionEnabled(false);
-        this.sound.play("alarm")	; //play once
+        this.sound.play("alarm");
         this.energyView.energyUpdate(-1,'balloons');
         animate(this.player)
             .now({
@@ -240,7 +213,7 @@ function tick(dtMS) {
 
     var hits_z = this.player.getCollisions("zeps");
     for (var i = 0; i < hits_z.length; i++) {
-        this.sound.play("alarm",{loop: false}); //play once
+        this.sound.play("alarm",{loop: false});
         this.energyView.energyUpdate(-1,'zeps');
         animate(this.player)
             .now({r: 0.2}, 60)
@@ -259,7 +232,6 @@ function tick(dtMS) {
         this.sound.play("medbox");
     }
 
-    // If the player fell off the bottom of the screen, game over!
     if (this.player.getY() >= this.parallaxView.groundLayer.style.height) {
         this.energyView.setThumbSize(0);
         this.textView.setText("Game over - press to play again!");
@@ -276,12 +248,11 @@ function tick(dtMS) {
 
 }
 
-
 function finishGame(that) {
     if (!that.isFinished) {
         that.isFinished = true;
         clearInterval(that.tickInterval);
-        that.player.acceleration.x = -400; //slow down
+        that.player.acceleration.x = -400;
         that.textView.show();
         animate(that.parallaxView)
             .now({opacity: 0.7}, 1000)
@@ -296,4 +267,3 @@ function finishGame(that) {
             .then({y: 0},400);
     }
 }
-

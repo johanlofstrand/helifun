@@ -9,15 +9,6 @@ exports = Class(GC.Application, function () {
 	this.baseHeight = 760;
 	this.baseWidth = device.screen.width * (this.baseHeight / device.screen.height);
 	this.scale = device.screen.height / this.baseHeight;
-
-	//console.log("device.screen.width: " + device.screen.width);
-	//console.log("baseWidth: " + this.baseWidth);
-	//console.log("baseHeight: " + this.baseHeight);
-	//console.log("scale: " + this.scale);
-
-	/* Run after the engine is created and the scene graph is in
-	 * place, but before the resources have been loaded.
-	 */
 	this.initUI = function () {
 		var titlescreen = new TitleScreen(),
 			gamescreen = new GameScreen({width: this.baseWidth, height: this.baseHeight});
@@ -37,8 +28,6 @@ exports = Class(GC.Application, function () {
 
 		var sound = Sounds.loadSound();
 		setTimeout(function () {
-			// This is in a setTimeout because some desktop browsers need
-			// a moment to prepare the sound (this is probably a bug in DevKit)
 			sound.play("start");
 		}.bind(this), 10);
 
@@ -46,13 +35,7 @@ exports = Class(GC.Application, function () {
 			rootView.push(gamescreen);
 			sound.stop("start");
 			gamescreen.emit('app:start');
-            titlescreen.delete;
 		});
-
-		/*gamescreen.on('gamescreen:end', function () {
-			sound.stop('background');
-			rootView.pop(true,true); //no animation in transiation
-		});*/
 	};
 
 	device.setBackButtonHandler(function() {
@@ -69,8 +52,5 @@ exports = Class(GC.Application, function () {
 		sound.start('start');
 	};
 
-	/* Executed after the asset resources have been loaded.
-	 * If there is a splash screen, it's removed.
-	 */
 	this.launchUI = function () {};
 });

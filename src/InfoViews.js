@@ -17,7 +17,7 @@ exports.setupEnergyView = function(view) {
 			activeColor: '#FFFFFF'
 		},
 		thumb: {
-			activeColor: '#FFFF00', //bg color...
+			activeColor: '#FFFF00',
 			inactiveColor: '#FFFF00'
 		}
      });
@@ -52,14 +52,4 @@ exports.setupScoreView = function (view) {
 		url: 'resources/images/numbers/{}.png'
 	});
 	return this.scoreView;
-}
-
-
-
-
-
-
-
-
-
-	
+};

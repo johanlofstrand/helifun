@@ -3,7 +3,8 @@ import ui.ImageView;
 import src.platformer.ParallaxView as ParallaxView;
 import src.GroundLayer as groundlayer;
 import src.ZepLayer as zeplayer;
-import src.DiamondLayer as diamondlayer;
+import src.DiamondLayerGreen as diamondlayergreen;
+import src.DiamondLayerRed as diamondlayerred;
 import src.DepthLayers as DepthLayers;
 import src.PlaneLayer as planelayer;
 import src.BalloonLayer as balloonlayer;
@@ -15,7 +16,7 @@ exports = Class(ParallaxView, function (supr) {
         opts = merge(opts, {
             width:	opts.width,
             height: opts.height,
-            scale: 1 //important - we want title screen to scale but not this view.
+            scale: 1
         });
 
         this.super = opts;
@@ -29,7 +30,7 @@ exports = Class(ParallaxView, function (supr) {
 
         this.style.backgroundColor = "#87CEFA";
 
-        this.groundLayer = this.addLayer({  //groundlayer needs to be defined cause player is added to it in gamescreen
+        this.groundLayer = this.addLayer({
             distance: 7,
             populate: function (layer, x) {
                 return groundlayer.populateGroundLayer(layer, x);
@@ -49,7 +50,15 @@ exports = Class(ParallaxView, function (supr) {
         this.addLayer({
             distance: 7,
             populate: function (layer, x) {
-                return diamondlayer.populateDiamondLayer(layer, x);
+                return diamondlayergreen.populateDiamondLayer(layer, x);
+            }.bind(this)
+
+        });
+
+        this.addLayer({
+            distance: 7,
+            populate: function (layer, x) {
+                return diamondlayerred.populateDiamondLayer(layer, x);
             }.bind(this)
 
         });

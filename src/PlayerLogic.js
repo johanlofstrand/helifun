@@ -25,4 +25,3 @@ exports.setupPlayer = function () {
 	});
 	return player;
 };
-	

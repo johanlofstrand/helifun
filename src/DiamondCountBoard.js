@@ -31,14 +31,3 @@ exports.setupDiamondCountView = function (view,diamondType,spaceFromEdge) {
 
 	return diamondCountView;
 };
-
-
-
-
-
-
-
-
-
-
-	

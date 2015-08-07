@@ -22,7 +22,7 @@ exports.populatePlaneLayer = function(layer, x) {
 		
 		this.init = function(opts) {
 			opts.group = "planes";
-			opts.hitbox = {  //rather player friendly hitbox
+			opts.hitbox = {
 				x: 10,
 				y: 10,
 				width: 100,
@@ -44,12 +44,9 @@ exports.populatePlaneLayer = function(layer, x) {
 		};
 
 		this.tick = function () {
-			this.hitbox.y = this.sprite.style.y; //must update hitbox due to animation changes position all the time...
+			this.hitbox.y = this.sprite.style.y;
 			this.hitbox.x = this.sprite.style.x;
 			this.style.y++;	
 			this.style.x = this.style.x - 2;
 		};
 	});
-
-		
-
