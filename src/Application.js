@@ -42,15 +42,5 @@ exports = Class(GC.Application, function () {
 		return false;
 	});
 
-	this.onPause= function() {
-		sound.stop('background');
-		sound.stop('start');
-	};
-
-	this.onResume = function() {
-		sound.start('background');
-		sound.start('start');
-	};
-
 	this.launchUI = function () {};
 });

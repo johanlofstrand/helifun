@@ -7,7 +7,7 @@ import ui.SpriteView;
 
 exports.populateDiamondLayer = function(layer, x) {
 
-	layer.obtainView(DiamondView, {
+	layer.obtainView(DiamondViewGreen, {
 				superview: layer,
 				x: x+util.randInt(500,1000),
 				y: util.randInt(100,500),
@@ -17,7 +17,7 @@ exports.populateDiamondLayer = function(layer, x) {
 		return util.randInt(700,2400);
 	};
 
-	var DiamondView = new Class([ui.View, Physics], function (supr) {
+	var DiamondViewGreen = new Class([ui.View, Physics], function (supr) {
 
 		this.diatype = "greendiab";
 

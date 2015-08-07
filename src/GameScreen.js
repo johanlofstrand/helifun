@@ -20,7 +20,7 @@ exports = Class(ui.View, function (supr) {
 
     this.GRAVITY = 0;
     this.PLAYER_INITIAL_SPEED = 150;
-    this.WORLD_ACCELERATION = 15;
+    this.WORLD_ACCELERATION = 14;
     this.SCORE_TIME = 1;
     this.MAX_HEIGHT = -400;
 
@@ -39,7 +39,6 @@ exports = Class(ui.View, function (supr) {
         this.textView = new ui.TextView({
             superview: this,
             layout: 'box',
-            fontFamily: 'BPreplayBold',
             text: "Game over!",
             size: 45,
             wrap: true
@@ -227,7 +226,7 @@ function tick(dtMS) {
         var goldb = hit.view;
         goldb.setCollisionEnabled(false);
         goldb.removeFromSuperview();
-        this.energyView.energyUpdate(50);
+        this.energyView.energyUpdate(40);
         this.no_of_gold_ballons++;
         this.sound.play("medbox");
     }
