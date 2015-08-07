@@ -3,48 +3,37 @@ import ui.ImageView as ImageView;
 import ui.SpriteView;
 import ui.ImageScaleView;
 import ui.resource.loader as loader;
-import ui.widget.ButtonView as ButtonView;
 import ui.TextView;
-
 import math.geom.Rect as Rect;
 import math.geom.Point as Point;
-
 import animate;
 import AudioManager;
-
 
 import src.platformer.Physics as Physics;
 import src.platformer.ScoreView as ScoreView;
 import src.platformer.util as util;
-import src.ApplicationExtras as extras;
+import src.Sounds as Sounds;
 import src.InfoViews as InfoViews;
 import src.PlayerLogic as playerlogic;
 import src.DiamondCountBoard as DiamondCountBoard;
-
-
 import src.ParallaxLayer as ParallaxLayer;
 import event.Emitter as Emitter;
-
 import src.platformer.GestureView as GestureView;
-
+import src.GameLogic as GameLogic;
 
 import device;
 
-
 exports = Class(ui.View, function (supr) {
 
-    this.boundsWidth = 1000;
-    this.boundsHeight = 760;
-    this.baseWidth = device.screen.width * (this.boundsHeight / device.screen.height); //864
-    this.baseHeight = this.boundsHeight; //576
-    this.scale = device.screen.height / this.baseHeight; //1
+    this.baseHeight  = 760;
+    this.baseWidth = device.screen.width * (this.baseHeight / device.screen.height);
+    this.scale = device.screen.height / this.baseHeight;
 
     this.GRAVITY = 0;
     this.PLAYER_INITIAL_SPEED = 150;
-    this.WORLD_ACCELERATION = 7;
-    this.SCORE_STAR = 500;
+    this.WORLD_ACCELERATION = 9;
     this.SCORE_TIME = 1;
-    this.MAX_HEIGHT = -500;
+    this.MAX_HEIGHT = -400;
 
     var self = this;
 
@@ -94,7 +83,7 @@ exports = Class(ui.View, function (supr) {
             self.parallaxView = new ParallaxLayer(this);
             this.addSubview(this.parallaxView );
             self.player = playerlogic.setupPlayer();
-            this.sound = extras.loadSound();
+            this.sound = Sounds.loadSound();
         }.bind(this));
     };
 
@@ -129,7 +118,6 @@ exports = Class(ui.View, function (supr) {
 
     this.finishGame = function() {
         if (!this.isFinished) {
-            console.log("In finishGame");
             this.isFinished = true;
             this.okToRestart = false;
             //this.sound.play("lose");
@@ -145,7 +133,8 @@ exports = Class(ui.View, function (supr) {
                 }, 700, animate.easeIn)
                 .then({scale: 2}, 400, animate.easeIn)
                 .then({scale: 1}, 400, animate.easeOut)
-                .then({y: 0},400)
+                .then({y: 0},400);
+          //  this.endScreen = EndScreen.setupEndScreen(this);
         }
     };
 
@@ -216,9 +205,6 @@ function startGame () {
 
 function tick(dtMS) {
 
-    var dt = Math.min(dtMS / 1000, 1/30); //return lowest value of these
-    this.t += dt;
-
     if (!this.loaded) {
         return;
     }
@@ -267,7 +253,6 @@ function tick(dtMS) {
         this.sound.play("star");
     }
 
-    // If they hit an ememy plane
     var hits_p = this.player.getCollisions("planes");
     for (var i = 0; i < hits_p.length; i++) {
         var hit = hits_p[i];
@@ -284,7 +269,6 @@ function tick(dtMS) {
         //this.finishGame();  //will finish anyway, ground rule
     }
 
-    // If they hit an balloon
     var hits_b = this.player.getCollisions("balloons");
     for (var i = 0; i < hits_b.length; i++) {
         hits_b[i].view.setCollisionEnabled(false);
@@ -297,7 +281,6 @@ function tick(dtMS) {
             then({r:0},1);
     }
 
-    // If they hit a zep
     var hits_z = this.player.getCollisions("zeps");
     for (var i = 0; i < hits_z.length; i++) {
         this.sound.play("alarm",{loop: false}); //play once
@@ -308,18 +291,15 @@ function tick(dtMS) {
             .then({r: 0}, 1);
     }
 
-    // If they hit a gold balloon
     var hits_g = this.player.getCollisions("medballoons");
     for (i=0; i< hits_g.length; i++) {
         var hit = hits_g[i];
         var goldb = hit.view;
         goldb.setCollisionEnabled(false);
         goldb.removeFromSuperview();
-        this.energyView.energyUpdate(100);
+        this.energyView.energyUpdate(50);
         this.no_of_gold_ballons++;
         this.sound.play("medbox");
-
-
     }
 
     // If the player fell off the bottom of the screen, game over!

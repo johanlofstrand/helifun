@@ -1,10 +1,9 @@
 import ui.ImageScaleView as ImageScaleView;
-import ui.View as ui.View;
 import src.platformer.ScoreView as ScoreView;
 
 exports.setupDiamondCountView = function (view,diamondType,spaceFromEdge) {
 
-	this.diamondView = new ImageScaleView({
+	var diamondView = new ImageScaleView({
 		zIndex: 10000,
 		autoScale: true,
 		width: 37,
@@ -15,7 +14,7 @@ exports.setupDiamondCountView = function (view,diamondType,spaceFromEdge) {
 		image: 'resources/images/diamonds/'+diamondType+'.png'
 	});
 
-	this.diamondCountView = new ScoreView({
+	var diamondCountView = new ScoreView({
 		superview: view,
 		zIndex: 10000,
 		x: view.style.width-spaceFromEdge,
@@ -30,7 +29,7 @@ exports.setupDiamondCountView = function (view,diamondType,spaceFromEdge) {
 		url: 'resources/images/numbers/{}.png'
 	});
 
-	return this.diamondCountView;
+	return diamondCountView;
 };
 
 

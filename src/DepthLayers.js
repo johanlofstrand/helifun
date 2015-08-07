@@ -1,12 +1,9 @@
-
 import ui.ImageView;
 import src.platformer.util as util;
 
 exports.addWater =function(parallaxView) {
 
-
 	parallaxView.addLayer({
-
 		distance: 5,
 		populate: function (layer, x) {
 			var v = layer.obtainView(ui.ImageView, {
@@ -15,13 +12,12 @@ exports.addWater =function(parallaxView) {
 				x: x,
 				y: layer.style.height-40,
 				width: 1000,
-				opacity: 1,
 				height: 40
 			});
 			return v.style.width;
 		}
 	});
-}
+};
 
 exports.addCloud = function(parallaxView) {
 	parallaxView.addLayer({
@@ -39,7 +35,4 @@ exports.addCloud = function(parallaxView) {
 			return util.randInt(200, 600);
 		}
 	});
-}
-	
-
-
+};

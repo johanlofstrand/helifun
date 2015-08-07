@@ -12,7 +12,7 @@
   "dependencies": {
     "devkit-core": "https://github.com/gameclosure/devkit-core#v3.0.0-rc1"
   },
-  "description": "A sample platformer game built with the Game Closure DevKit",
+  "description": "A simple kids game - fly a helicopter and collect diamonds",
   "icon": "resources/icons/icon512.png",
   "ios": {
     "appleID": "12345678",
@@ -38,12 +38,11 @@
     "portrait960": "resources/splash/portrait960.png"
   },
   "studio": {
-    "domain": "studio.example.com",
-    "name": "Example Studio Name",
-    "stagingDomain": "staging.example.com"
+    "domain": "heliflyfun.appspot.com",
+    "name": "Heliflyfun"
   },
   "supportedOrientations": [
     "landscape"
   ],
-  "title": "Helifun"
+  "title": "Heliflyfun"
 }
