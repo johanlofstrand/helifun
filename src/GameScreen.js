@@ -103,7 +103,7 @@ exports = Class(ui.View, function (supr) {
         }
         //this.player.setVelocity(this.player.getVelocity(),100);
     };
-    
+
     /* -------------------------------------------------------------------------------------------------------------------------------------------*/
 
     /*Start and stop and run game*/
@@ -156,7 +156,7 @@ function startGame () {
     var dt = Math.min(this.dtMS / 1000, 1/30); //return lowest value of these
     this.t += dt;
 
-    var i = setInterval(tick.bind(this), dt);
+    this.tickInterval = setInterval(tick.bind(this), dt);
     tick.bind(this);
 }
 
@@ -280,6 +280,7 @@ function tick(dtMS) {
 function finishGame(that) {
     if (!that.isFinished) {
         that.isFinished = true;
+        clearInterval(that.tickInterval);
         that.player.acceleration.x = -400; //slow down
         that.textView.show();
         animate(that.parallaxView)
