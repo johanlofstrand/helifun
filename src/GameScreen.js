@@ -18,10 +18,11 @@ import src.platformer.GestureView as GestureView;
 exports = Class(ui.View, function (supr) {
 
     this.GRAVITY = 0;
-    this.PLAYER_INITIAL_SPEED = 150;
-    this.WORLD_ACCELERATION = 14;
+    this.PLAYER_INITIAL_SPEED = 125;
+    this.WORLD_ACCELERATION = 16;
     this.SCORE_TIME = 1;
     this.MAX_HEIGHT = -400;
+    this.counter = 0;
 
     this.init = function (opts) {
 
@@ -139,8 +140,19 @@ function startGame () {
 
 function tick(dtMS) {
 
+    var energyCost = -1;
+
     if (!this.loaded) {
         return;
+    }
+
+    this.counter++;
+    if (this.counter>4000) {
+        energyCost = -2;
+    }
+
+    if (this.counter>8000) {
+        energyCost = -3;
     }
 
     if (this.isFinished) {
@@ -167,7 +179,7 @@ function tick(dtMS) {
         this.sound.play("alarm",{loop: false}); //play once
         this.player.setRotation(0);
         animate(this.player).now({dr: -1},50).then({dr: 1},50)
-        this.energyView.energyUpdate(-1);
+        this.energyView.energyUpdate(energyCost);
     }
 
     var hits = this.player.getCollisions("diamondballoons");
@@ -190,7 +202,7 @@ function tick(dtMS) {
         var hit = hits_p[i];
         var plane = hit.view;
         this.sound.play("alarm",{loop: false});
-        this.energyView.energyUpdate(-1,'planes');
+        this.energyView.energyUpdate(energyCost,'planes');
         animate(this.player)
             .now({
                 dr: Math.PI * -2
@@ -202,7 +214,7 @@ function tick(dtMS) {
     for (var i = 0; i < hits_b.length; i++) {
         hits_b[i].view.setCollisionEnabled(false);
         this.sound.play("alarm");
-        this.energyView.energyUpdate(-1,'balloons');
+        this.energyView.energyUpdate(energyCost,'balloons');
         animate(this.player)
             .now({
                 r: Math.PI * 2
@@ -213,7 +225,7 @@ function tick(dtMS) {
     var hits_z = this.player.getCollisions("zeps");
     for (var i = 0; i < hits_z.length; i++) {
         this.sound.play("alarm",{loop: false});
-        this.energyView.energyUpdate(-1,'zeps');
+        this.energyView.energyUpdate(energyCost,'zeps');
         animate(this.player)
             .now({r: 0.2}, 60)
             .then({r:-0.2},60)
@@ -226,7 +238,7 @@ function tick(dtMS) {
         var goldb = hit.view;
         goldb.setCollisionEnabled(false);
         goldb.removeFromSuperview();
-        this.energyView.energyUpdate(40);
+        this.energyView.energyUpdate(20);
         this.no_of_gold_ballons++;
         this.sound.play("medbox");
     }

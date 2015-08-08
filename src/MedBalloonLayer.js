@@ -12,9 +12,9 @@ exports.populateMedBalloonLayer = function(layer, x) {
 				x: x+util.randInt(500,1000),
 				y: util.randInt(100,500),
 				width: 52,
-				height: 97,
-			}, {poolSize: 8, group: "medballoons"});
-		return util.randInt(700,2400);
+				height: 97
+			}, {poolSize: 6, group: "medballoons"});
+		return util.randInt(1300,3500);
 	};
 
 	var MedBalloonView = new Class([ui.View, Physics], function (supr) {
