@@ -18,8 +18,8 @@ import src.platformer.GestureView as GestureView;
 exports = Class(ui.View, function (supr) {
 
     this.GRAVITY = 0;
-    this.PLAYER_INITIAL_SPEED = 125;
-    this.WORLD_ACCELERATION = 16;
+    this.PLAYER_INITIAL_SPEED = 130;
+    this.WORLD_ACCELERATION = 15;
     this.SCORE_TIME = 1;
     this.MAX_HEIGHT = -400;
     this.counter = 0;
@@ -147,12 +147,16 @@ function tick(dtMS) {
     }
 
     this.counter++;
-    if (this.counter>4000) {
+    if (this.counter>3000) {
         energyCost = -2;
     }
 
-    if (this.counter>8000) {
+    if (this.counter>7000) {
         energyCost = -3;
+    }
+
+    if (this.counter>12000) {
+        energyCost = -5;
     }
 
     if (this.isFinished) {
